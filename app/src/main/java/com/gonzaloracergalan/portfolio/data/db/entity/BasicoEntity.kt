@@ -1,0 +1,32 @@
+package com.gonzaloracergalan.portfolio.data.db.entity
+
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
+
+@Entity(
+    tableName = "basico",
+    foreignKeys = [
+        ForeignKey(
+            entity = JsonResumeWrapperEntity::class,
+            parentColumns = ["resumeId"],
+            childColumns = ["resumeOwnerId"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
+)
+data class BasicoEntity(
+    @PrimaryKey(autoGenerate = true)
+    val id: Long = 0,
+    val resumeOwnerId: Long,
+    val correo: String?,
+    val etiqueta: String?,
+    val imagen: String?,
+    val nombre: String?,
+    val resumen: String?,
+    val telefono: String?,
+    val url: String?,
+    @Embedded
+    val ubicacion: UbicacionEntity?
+)

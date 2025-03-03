@@ -1,0 +1,27 @@
+package com.gonzaloracergalan.portfolio.data.db.dao
+
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
+import com.gonzaloracergalan.portfolio.data.db.entity.CertificadoEntity
+
+@Dao
+interface CertificacionDAO {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCertificado(certificado: CertificadoEntity): Long
+
+    @Update
+    suspend fun updateCertificado(certificado: CertificadoEntity)
+
+    @Delete
+    suspend fun deleteCertificado(certificado: CertificadoEntity)
+
+    @Query("SELECT * FROM certificado WHERE id = :id")
+    suspend fun getCertificadoById(id: Long): CertificadoEntity?
+
+    @Query("SELECT * FROM certificado")
+    suspend fun getAllCertificados(): List<CertificadoEntity>
+}

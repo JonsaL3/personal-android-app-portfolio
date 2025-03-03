@@ -1,0 +1,21 @@
+package com.gonzaloracergalan.portfolio.data.dt.dto
+
+
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class ProyectoDTO(
+    @SerialName("descripcion")
+    val descripcion: String? = null,
+    @SerialName("fechaFin")
+    val fechaFin: String? = null,
+    @SerialName("fechaInicio")
+    val fechaInicio: String? = null,
+    @SerialName("logros")
+    val logros: List<String>? = null,
+    @SerialName("nombre")
+    val nombre: String? = null,
+    @SerialName("url")
+    val url: String? = null
+)
