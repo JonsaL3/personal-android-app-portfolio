@@ -59,12 +59,15 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
     // ROOM
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
     implementation(libs.room.runtime)
-
-    // KOTLIN
+    // KOTLINX SERIALIZATION
     implementation(libs.kotlinx.serialization.json)
+    // KOIN
+    implementation(project.dependencies.platform(libs.koin.bom))
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
+    implementation(libs.koin.android.compose)
 }
