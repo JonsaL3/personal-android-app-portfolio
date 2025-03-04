@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.gonzaloracergalan.portfolio.data.dt.dto.InteresDTO
 
 
 @Entity(
@@ -26,4 +27,11 @@ data class InteresEntity(
     val resumeOwnerId: Long,
     val nombre: String?,
     val palabrasClave: List<String>? // Se requiere el converter
-)
+) {
+    fun toDTO(): InteresDTO {
+        return InteresDTO(
+            nombre = nombre,
+            palabrasClave = palabrasClave
+        )
+    }
+}

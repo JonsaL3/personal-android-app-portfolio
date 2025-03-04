@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.gonzaloracergalan.portfolio.data.dt.dto.HabilidadDTO
 
 @Entity(
     tableName = "habilidad",
@@ -26,4 +27,12 @@ data class HabilidadEntity(
     val nivel: String?,
     val nombre: String?,
     val palabrasClave: List<String>? // Se requiere el converter
-)
+) {
+    fun toDTO(): HabilidadDTO {
+        return HabilidadDTO(
+            nivel = nivel,
+            nombre = nombre,
+            palabrasClave = palabrasClave
+        )
+    }
+}

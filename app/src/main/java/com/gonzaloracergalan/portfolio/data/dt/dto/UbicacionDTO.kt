@@ -1,6 +1,7 @@
 package com.gonzaloracergalan.portfolio.data.dt.dto
 
 
+import com.gonzaloracergalan.portfolio.data.db.entity.UbicacionEntity
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -16,4 +17,14 @@ data class UbicacionDTO(
     val direccion: String? = null,
     @SerialName("region")
     val region: String? = null
-)
+) {
+    fun toEntity(): UbicacionEntity {
+        return UbicacionEntity(
+            ciudad = ciudad,
+            codigoPais = codigoPais,
+            codigoPostal = codigoPostal,
+            direccion = direccion,
+            region = region
+        )
+    }
+}

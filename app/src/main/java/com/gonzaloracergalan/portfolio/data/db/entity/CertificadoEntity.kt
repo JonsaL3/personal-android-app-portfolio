@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.gonzaloracergalan.portfolio.data.dt.dto.CertificadoDTO
 
 @Entity(
     tableName = "certificado",
@@ -27,4 +28,13 @@ data class CertificadoEntity(
     val fecha: String?,
     val nombre: String?,
     val url: String?
-)
+) {
+    fun toDTO(): CertificadoDTO {
+        return CertificadoDTO(
+            emisor = emisor,
+            fecha = fecha,
+            nombre = nombre,
+            url = url
+        )
+    }
+}

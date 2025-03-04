@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.gonzaloracergalan.portfolio.data.dt.dto.PerfilDTO
 
 @Entity(
     tableName = "perfil",
@@ -26,4 +27,12 @@ data class PerfilEntity(
     val red: String?,
     val url: String?,
     val usuario: String?
-)
+) {
+    fun toDTO(): PerfilDTO {
+        return PerfilDTO(
+            red = red,
+            url = url,
+            usuario = usuario
+        )
+    }
+}

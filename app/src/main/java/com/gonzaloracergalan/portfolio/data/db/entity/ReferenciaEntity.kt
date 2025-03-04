@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.gonzaloracergalan.portfolio.data.dt.dto.ReferenciaDTO
 
 @Entity(
     tableName = "referencia",
@@ -25,4 +26,11 @@ data class ReferenciaEntity(
     val resumeOwnerId: Long,
     val nombre: String?,
     val referencia: String?
-)
+) {
+    fun toDTO(): ReferenciaDTO {
+        return ReferenciaDTO(
+            nombre = nombre,
+            referencia = referencia
+        )
+    }
+}

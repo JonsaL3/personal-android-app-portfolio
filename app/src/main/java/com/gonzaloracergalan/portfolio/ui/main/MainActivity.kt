@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import com.gonzaloracergalan.portfolio.ui.theme.PortfolioTheme
+import org.slf4j.LoggerFactory
 
 /**
  * Aplicación orientada a crear mi portfolio personal como desarrollador de android.
@@ -154,11 +155,21 @@ import com.gonzaloracergalan.portfolio.ui.theme.PortfolioTheme
  */
 class MainActivity : ComponentActivity() {
 
+    companion object {
+        private val logger = LoggerFactory.getLogger("MainActivity")
+    }
+
     private val mainViewModel by viewModels<MainViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        logger.info("onCreate")
+        logger.warn("onCreate")
+        logger.error("onCreate")
+        logger.debug("onCreate")
+        logger.trace("onCreate")
 
         setContent {
             PortfolioTheme {

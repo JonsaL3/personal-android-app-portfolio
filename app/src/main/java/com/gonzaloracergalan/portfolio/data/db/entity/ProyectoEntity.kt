@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.gonzaloracergalan.portfolio.data.dt.dto.ProyectoDTO
 
 @Entity(
     tableName = "proyecto",
@@ -29,4 +30,15 @@ data class ProyectoEntity(
     val logros: List<String>?, // Se requiere el converter
     val nombre: String?,
     val url: String?
-)
+) {
+    fun toDTO(): ProyectoDTO {
+        return ProyectoDTO(
+            descripcion = descripcion,
+            fechaFin = fechaFin,
+            fechaInicio = fechaInicio,
+            logros = logros,
+            nombre = nombre,
+            url = url
+        )
+    }
+}

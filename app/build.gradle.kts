@@ -70,4 +70,7 @@ dependencies {
     implementation(libs.koin.core)
     implementation(libs.koin.android)
     implementation(libs.koin.android.compose)
+    // LOGGING
+    implementation(libs.logging.slf4j)
+    implementation(libs.logging.logback)
 }

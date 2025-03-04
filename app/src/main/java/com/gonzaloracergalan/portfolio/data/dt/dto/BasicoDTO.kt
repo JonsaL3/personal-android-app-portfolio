@@ -1,6 +1,6 @@
 package com.gonzaloracergalan.portfolio.data.dt.dto
 
-
+import com.gonzaloracergalan.portfolio.data.db.entity.BasicoEntity
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -24,4 +24,19 @@ data class BasicoDTO(
     val ubicacion: UbicacionDTO? = null,
     @SerialName("url")
     val url: String? = null
-)
+) {
+    fun toEntity(id: Long, resumeOwnerId: Long): BasicoEntity {
+        return BasicoEntity(
+            id = id,
+            resumeOwnerId = resumeOwnerId,
+            correo = correo,
+            etiqueta = etiqueta,
+            imagen = imagen,
+            nombre = nombre,
+            resumen = resumen,
+            telefono = telefono,
+            url = url,
+            ubicacion = ubicacion?.toEntity(),
+        )
+    }
+}

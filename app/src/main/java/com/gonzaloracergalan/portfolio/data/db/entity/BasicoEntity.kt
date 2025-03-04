@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.gonzaloracergalan.portfolio.data.dt.dto.BasicoDTO
 
 @Entity(
     tableName = "basico",
@@ -33,4 +34,18 @@ data class BasicoEntity(
     val url: String?,
     @Embedded
     val ubicacion: UbicacionEntity?
-)
+) {
+    fun toDTO(perfiles: List<PerfilEntity>): BasicoDTO {
+        return BasicoDTO(
+            correo = correo,
+            etiqueta = etiqueta,
+            imagen = imagen,
+            nombre = nombre,
+            resumen = resumen,
+            telefono = telefono,
+            url = url,
+            ubicacion = ubicacion?.toDTO(),
+            perfiles = perfiles.map { it.toDTO() }
+        )
+    }
+}

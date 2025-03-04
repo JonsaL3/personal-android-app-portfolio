@@ -1,6 +1,7 @@
 package com.gonzaloracergalan.portfolio.data.dt.dto
 
 
+import com.gonzaloracergalan.portfolio.data.db.entity.VoluntariadoEntity
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -20,4 +21,18 @@ data class VoluntariadoDTO(
     val resumen: String? = null,
     @SerialName("url")
     val url: String? = null
-)
+) {
+    fun toEntity(id: Long, resumeOwnerId: Long): VoluntariadoEntity {
+        return VoluntariadoEntity(
+            id = id,
+            resumeOwnerId = resumeOwnerId,
+            fechaFin = fechaFin,
+            fechaInicio = fechaInicio,
+            logros = logros,
+            organizacion = organizacion,
+            posicion = posicion,
+            resumen = resumen,
+            url = url
+        )
+    }
+}

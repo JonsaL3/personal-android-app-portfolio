@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.gonzaloracergalan.portfolio.data.dt.dto.EducacionDTO
 
 @Entity(
     tableName = "educacion",
@@ -31,4 +32,17 @@ data class EducacionEntity(
     val institucion: String?,
     val tipoEstudio: String?,
     val url: String?
-)
+) {
+    fun toDTO(): EducacionDTO {
+        return EducacionDTO(
+            area = area,
+            calificacion = calificacion,
+            cursos = cursos,
+            fechaFin = fechaFin,
+            fechaInicio = fechaInicio,
+            institucion = institucion,
+            tipoEstudio = tipoEstudio,
+            url = url
+        )
+    }
+}
