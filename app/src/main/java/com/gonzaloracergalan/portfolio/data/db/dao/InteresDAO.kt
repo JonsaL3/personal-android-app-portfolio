@@ -13,6 +13,9 @@ interface InteresDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertInteres(interes: InteresEntity): Long
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertIntereses(intereses: List<InteresEntity>): List<Long>
+
     @Update
     suspend fun updateInteres(interes: InteresEntity)
 

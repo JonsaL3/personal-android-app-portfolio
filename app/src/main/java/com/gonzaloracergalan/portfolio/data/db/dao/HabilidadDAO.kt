@@ -13,6 +13,9 @@ interface HabilidadDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertHabilidad(habilidad: HabilidadEntity): Long
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertHabilidades(habilidades: List<HabilidadEntity>): List<Long>
+
     @Update
     suspend fun updateHabilidad(habilidad: HabilidadEntity)
 

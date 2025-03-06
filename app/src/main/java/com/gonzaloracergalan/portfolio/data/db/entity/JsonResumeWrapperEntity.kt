@@ -10,8 +10,33 @@ data class JsonResumeWrapperEntity(
     val resumeId: Long = 0
 ) {
     fun toDTO(
-        // TODO
+        basicoEntity: BasicoEntity,
+        perfilesEntity: List<PerfilEntity>,
+        certificacionEntities: List<CertificadoEntity>,
+        educacionEntities: List<EducacionEntity>,
+        habilidadEntities: List<HabilidadEntity>,
+        idiomaEntities: List<IdiomaEntity>,
+        interesEntities: List<InteresEntity>,
+        premiosEntities: List<PremioEntity>,
+        proyectosEntities: List<ProyectoEntity>,
+        publicacionesEntities: List<PublicacionEntity>,
+        referenciasEntities: List<ReferenciaEntity>,
+        trabajoEntities: List<TrabajoEntity>,
+        voluntariadoEntities: List<VoluntariadoEntity>
     ): JsonResumeWrapperDTO {
-        return JsonResumeWrapperDTO()
+        return JsonResumeWrapperDTO(
+            basico = basicoEntity.toDTO(perfilesEntity),
+            certificados = certificacionEntities.map { it.toDTO() },
+            educacion = educacionEntities.map { it.toDTO() },
+            habilidades = habilidadEntities.map { it.toDTO() },
+            idiomas = idiomaEntities.map { it.toDTO() },
+            intereses = interesEntities.map { it.toDTO() },
+            premios = premiosEntities.map { it.toDTO() },
+            proyectos = proyectosEntities.map { it.toDTO() },
+            publicaciones = publicacionesEntities.map { it.toDTO() },
+            referencias = referenciasEntities.map { it.toDTO() },
+            trabajo = trabajoEntities.map { it.toDTO() },
+            voluntariado = voluntariadoEntities.map { it.toDTO() }
+        )
     }
 }

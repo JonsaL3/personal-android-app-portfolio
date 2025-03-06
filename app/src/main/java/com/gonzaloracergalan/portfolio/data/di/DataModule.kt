@@ -2,6 +2,7 @@ package com.gonzaloracergalan.portfolio.data.di
 
 import androidx.room.Room
 import com.gonzaloracergalan.portfolio.data.db.PortfolioRoomDatabase
+import com.gonzaloracergalan.portfolio.data.repository.JsonResumeWrapperRepository
 import com.gonzaloracergalan.portfolio.util.PortfolioKoinModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module
@@ -32,5 +33,7 @@ object DataModule : PortfolioKoinModule {
             single { get<PortfolioRoomDatabase>().referenciaDao() }
             single { get<PortfolioRoomDatabase>().trabajoDao() }
             single { get<PortfolioRoomDatabase>().voluntariadoDao() }
+            // repositories
+            single { JsonResumeWrapperRepository() }
         }
 }

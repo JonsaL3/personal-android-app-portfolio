@@ -13,6 +13,9 @@ interface PremioDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPremio(premio: PremioEntity): Long
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertPremios(premios: List<PremioEntity>): List<Long>
+
     @Update
     suspend fun updatePremio(premio: PremioEntity)
 

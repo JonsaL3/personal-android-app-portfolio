@@ -13,6 +13,9 @@ interface PublicacionDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPublicacion(publicacion: PublicacionEntity): Long
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertPublicaciones(publicaciones: List<PublicacionEntity>): List<Long>
+
     @Update
     suspend fun updatePublicacion(publicacion: PublicacionEntity)
 

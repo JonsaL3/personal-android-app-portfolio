@@ -13,6 +13,9 @@ interface VoluntariadoDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertVoluntariado(voluntariado: VoluntariadoEntity): Long
 
+    @Insert
+    suspend fun insertVoluntariados(voluntariados: List<VoluntariadoEntity>): List<Long>
+
     @Update
     suspend fun updateVoluntariado(voluntariado: VoluntariadoEntity)
 

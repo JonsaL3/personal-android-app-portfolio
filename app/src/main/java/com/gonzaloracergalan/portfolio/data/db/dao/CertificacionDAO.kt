@@ -13,6 +13,9 @@ interface CertificacionDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCertificado(certificado: CertificadoEntity): Long
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCertificados(perfiles: List<CertificadoEntity>): List<Long>
+
     @Update
     suspend fun updateCertificado(certificado: CertificadoEntity)
 

@@ -3,6 +3,7 @@ package com.gonzaloracergalan.portfolio.data.repository
 import com.gonzaloracergalan.portfolio.data.db.dao.EducacionDAO
 import com.gonzaloracergalan.portfolio.data.db.entity.EducacionEntity
 import com.gonzaloracergalan.portfolio.data.dt.dto.EducacionDTO
+import com.gonzaloracergalan.portfolio.data.repository.util.PortfolioRepository
 import com.gonzaloracergalan.portfolio.data.repository.util.RepositoryResponse
 import org.koin.core.component.inject
 import org.slf4j.LoggerFactory
@@ -14,7 +15,7 @@ class EducacionRepository : PortfolioRepository() {
 
     private val dao: EducacionDAO by inject()
 
-    suspend fun save(entity: EducacionEntity) = runRoomOperation {
+    suspend fun save(entity: EducacionEntity) = runNonTransactionalRoomOperation {
         logger.trace("save: {}", entity)
         dao.insertEducacion(entity)
     }
@@ -23,7 +24,7 @@ class EducacionRepository : PortfolioRepository() {
         id: Long = 0,
         resumeOwnerId: Long,
         dto: EducacionDTO
-    ): RepositoryResponse = runRoomOperation {
+    ): RepositoryResponse = runNonTransactionalRoomOperation {
         logger.trace("save: id={}, resumeOwnerId={}, DTO={}", id, resumeOwnerId, dto)
         dao.insertEducacion(dto.toEntity(id, resumeOwnerId))
     }

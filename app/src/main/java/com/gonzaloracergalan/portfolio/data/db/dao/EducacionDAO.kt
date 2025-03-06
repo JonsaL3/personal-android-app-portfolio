@@ -13,6 +13,9 @@ interface EducacionDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertEducacion(educacion: EducacionEntity): Long
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertEducaciones(educacion: List<EducacionEntity>): List<Long>
+
     @Update
     suspend fun updateEducacion(educacion: EducacionEntity)
 

@@ -13,6 +13,9 @@ interface ReferenciaDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertReferencia(referencia: ReferenciaEntity): Long
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertReferencias(referencias: List<ReferenciaEntity>): List<Long>
+
     @Update
     suspend fun updateReferencia(referencia: ReferenciaEntity)
 

@@ -13,6 +13,9 @@ interface PerfilDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPerfil(perfil: PerfilEntity): Long
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertPerfiles(perfiles: List<PerfilEntity>): List<Long>
+
     @Update
     suspend fun updatePerfil(perfil: PerfilEntity)
 

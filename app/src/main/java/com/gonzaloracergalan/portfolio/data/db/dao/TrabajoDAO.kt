@@ -13,6 +13,9 @@ interface TrabajoDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTrabajo(trabajo: TrabajoEntity): Long
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTrabajos(trabajos: List<TrabajoEntity>): List<Long>
+
     @Update
     suspend fun updateTrabajo(trabajo: TrabajoEntity)
 

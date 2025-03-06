@@ -13,6 +13,9 @@ interface IdiomaDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertIdioma(idioma: IdiomaEntity): Long
 
+    @Insert
+    suspend fun insertIdiomas(idiomas: List<IdiomaEntity>): List<Long>
+
     @Update
     suspend fun updateIdioma(idioma: IdiomaEntity)
 

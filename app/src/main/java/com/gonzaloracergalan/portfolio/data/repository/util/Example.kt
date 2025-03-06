@@ -49,7 +49,7 @@ object Example {
                         direccion = "example",
                         region = "example"
                     ),
-                    url = "example"
+                    url = "example",
                 ),
                 certificados = listOf(
                     CertificadoDTO("example", "example", "example", "example"),

@@ -1,6 +1,7 @@
 package com.gonzaloracergalan.portfolio.data.dt.dto
 
 import com.gonzaloracergalan.portfolio.data.db.entity.BasicoEntity
+import com.gonzaloracergalan.portfolio.data.db.entity.PerfilEntity
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -25,8 +26,8 @@ data class BasicoDTO(
     @SerialName("url")
     val url: String? = null
 ) {
-    fun toEntity(id: Long, resumeOwnerId: Long): BasicoEntity {
-        return BasicoEntity(
+    fun toEntity(id: Long, resumeOwnerId: Long): Pair<BasicoEntity, List<PerfilEntity>> {
+        val basicoEntity = BasicoEntity(
             id = id,
             resumeOwnerId = resumeOwnerId,
             correo = correo,
@@ -38,5 +39,9 @@ data class BasicoDTO(
             url = url,
             ubicacion = ubicacion?.toEntity(),
         )
+        // Un basico al estar compuesto por una lista de perfiles, por como está mapeada la base de
+        // datos, los perfiles son otra entidad.
+        val perfilesEntity = perfiles?.map { it.toEntity(0, id) } ?: emptyList()
+        return Pair(basicoEntity, perfilesEntity)
     }
 }
