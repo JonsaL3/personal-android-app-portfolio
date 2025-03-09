@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.gonzaloracergalan.portfolio.data.db.entity.ReferenciaEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ReferenciaDAO {
@@ -27,4 +28,17 @@ interface ReferenciaDAO {
 
     @Query("SELECT * FROM referencia")
     suspend fun getAllReferencias(): List<ReferenciaEntity>
+
+    @Query(
+        """
+        SELECT * 
+        FROM referencia WHERE resumeOwnerId = (
+            SELECT resumeOwnerId
+            FROM resumes
+            WHERE isCurrent = 1
+            LIMIT 1
+        )
+    """
+    )
+    fun getCurrentAllReferenciasFlow(): Flow<List<ReferenciaEntity>>
 }

@@ -19,6 +19,7 @@ import com.gonzaloracergalan.portfolio.data.db.entity.JsonResumeWrapperEntity
 import com.gonzaloracergalan.portfolio.data.dt.dto.JsonResumeWrapperDTO
 import com.gonzaloracergalan.portfolio.data.repository.util.PortfolioRepository
 import com.gonzaloracergalan.portfolio.data.repository.util.RepositoryResponse
+import kotlinx.coroutines.flow.map
 import org.koin.core.component.inject
 import org.slf4j.LoggerFactory
 
@@ -46,6 +47,7 @@ class JsonResumeWrapperRepository : PortfolioRepository() {
     suspend fun save(entity: JsonResumeWrapperEntity): RepositoryResponse =
         runNonTransactionalRoomOperation {
             logger.trace("save: {}", entity)
+            aqui comprobamos no se inserte con el isCurrent a true-
             jsonResumeWrapperDAO.insertResume(entity)
         }
 

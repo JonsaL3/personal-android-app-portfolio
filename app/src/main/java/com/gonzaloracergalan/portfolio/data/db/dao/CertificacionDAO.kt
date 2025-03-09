@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.gonzaloracergalan.portfolio.data.db.entity.CertificadoEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CertificacionDAO {
@@ -27,4 +28,17 @@ interface CertificacionDAO {
 
     @Query("SELECT * FROM certificado")
     suspend fun getAllCertificados(): List<CertificadoEntity>
+
+    @Query(
+        """
+        SELECT * 
+        FROM certificado WHERE resumeOwnerId = (
+            SELECT resumeOwnerId
+            FROM resumes
+            WHERE isCurrent = 1
+            LIMIT 1
+        )
+    """
+    )
+    fun getCurrentAllCertificadosFlow(): Flow<List<CertificadoEntity>>
 }

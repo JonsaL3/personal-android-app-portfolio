@@ -6,7 +6,9 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.gonzaloracergalan.portfolio.data.db.entity.InteresEntity
 import com.gonzaloracergalan.portfolio.data.db.entity.PremioEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PremioDAO {
@@ -27,4 +29,17 @@ interface PremioDAO {
 
     @Query("SELECT * FROM premio")
     suspend fun getAllPremios(): List<PremioEntity>
+
+    @Query(
+        """
+        SELECT * 
+        FROM premio WHERE resumeOwnerId = (
+            SELECT resumeOwnerId
+            FROM resumes
+            WHERE isCurrent = 1
+            LIMIT 1
+        )
+    """
+    )
+    fun getCurrentAllPremiosFlow(): Flow<List<PremioEntity>>
 }

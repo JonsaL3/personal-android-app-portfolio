@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.gonzaloracergalan.portfolio.data.db.entity.PerfilEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PerfilDAO {
@@ -27,4 +28,21 @@ interface PerfilDAO {
 
     @Query("SELECT * FROM perfil")
     suspend fun getAllPerfiles(): List<PerfilEntity>
+
+    @Query(
+        """
+        SELECT * 
+        FROM perfil WHERE basicoId = (
+            SELECT basicoId
+            FROM resumes
+            WHERE resumeId = (
+                SELECT resumeId
+                FROM resumes
+                WHERE isCurrent = 1
+                LIMIT 1
+            )
+        )
+    """
+    )
+    fun getCurrentAllPerfilesOfCurrentBasicoFlow(): Flow<List<PerfilEntity>>
 }

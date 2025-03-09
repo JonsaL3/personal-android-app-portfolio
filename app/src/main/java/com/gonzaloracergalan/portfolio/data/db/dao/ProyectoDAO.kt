@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.gonzaloracergalan.portfolio.data.db.entity.ProyectoEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ProyectoDAO {
@@ -27,4 +28,17 @@ interface ProyectoDAO {
 
     @Query("SELECT * FROM proyecto")
     suspend fun getAllProyectos(): List<ProyectoEntity>
+
+    @Query(
+        """
+        SELECT * 
+        FROM proyecto WHERE resumeOwnerId = (
+            SELECT resumeOwnerId
+            FROM resumes
+            WHERE isCurrent = 1
+            LIMIT 1
+        )
+    """
+    )
+    fun getCurrentAllProyectosFlow(): Flow<List<ProyectoEntity>>
 }

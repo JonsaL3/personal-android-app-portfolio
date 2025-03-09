@@ -4,10 +4,15 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.gonzaloracergalan.portfolio.data.dt.dto.JsonResumeWrapperDTO
 
-@Entity(tableName = "resumes")
+@Entity(
+    tableName = "resumes",
+)
 data class JsonResumeWrapperEntity(
     @PrimaryKey(autoGenerate = true)
-    val resumeId: Long = 0
+    val resumeId: Long = 0,
+    // Solo uno podra ser isCurrent = true, que sera del que veamos la información en
+    // pantalla, el repo debera de garantizar que solo haya 1 a true.
+    val isCurrent: Boolean = false,
 ) {
     fun toDTO(
         basicoEntity: BasicoEntity,

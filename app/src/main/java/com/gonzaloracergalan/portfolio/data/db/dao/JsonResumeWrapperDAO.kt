@@ -24,4 +24,6 @@ interface JsonResumeWrapperDAO {
 
     @Query("SELECT * FROM resumes")
     suspend fun getAllResumes(): List<JsonResumeWrapperEntity>
+
+    setCurrent
 }

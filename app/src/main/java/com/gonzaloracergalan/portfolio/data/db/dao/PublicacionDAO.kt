@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.gonzaloracergalan.portfolio.data.db.entity.PublicacionEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PublicacionDAO {
@@ -27,4 +28,17 @@ interface PublicacionDAO {
 
     @Query("SELECT * FROM publicacion")
     suspend fun getAllPublicaciones(): List<PublicacionEntity>
+
+    @Query(
+        """
+        SELECT * 
+        FROM publicacion WHERE resumeOwnerId = (
+            SELECT resumeOwnerId
+            FROM resumes
+            WHERE isCurrent = 1
+            LIMIT 1
+        )
+    """
+    )
+    fun getCurrentAllPublicacionesFlow(): Flow<List<PublicacionEntity>>
 }

@@ -1,12 +1,10 @@
 package com.gonzaloracergalan.portfolio.data.dt.dto
 
-import androidx.room.Entity
 import com.gonzaloracergalan.portfolio.data.db.entity.JsonResumeWrapperEntity
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-@Entity
 data class JsonResumeWrapperDTO(
     @SerialName("basicos")
     val basico: BasicoDTO? = null,

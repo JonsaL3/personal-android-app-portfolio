@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.gonzaloracergalan.portfolio.data.db.entity.IdiomaEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface IdiomaDAO {
@@ -27,4 +28,17 @@ interface IdiomaDAO {
 
     @Query("SELECT * FROM idioma")
     suspend fun getAllIdiomas(): List<IdiomaEntity>
+
+    @Query(
+        """
+        SELECT * 
+        FROM idioma WHERE resumeOwnerId = (
+            SELECT resumeOwnerId
+            FROM resumes
+            WHERE isCurrent = 1
+            LIMIT 1
+        )
+    """
+    )
+    fun getCurrentAllIdiomasFlow(): Flow<List<IdiomaEntity>>
 }

@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.gonzaloracergalan.portfolio.data.db.entity.BasicoEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface BasicoDAO {
@@ -24,4 +25,15 @@ interface BasicoDAO {
 
     @Query("SELECT * FROM basico")
     suspend fun getAllBasicos(): List<BasicoEntity>
+
+    @Query("""
+        SELECT * 
+        FROM basico WHERE resumeOwnerId = (
+            SELECT resumeOwnerId
+            FROM resumes
+            WHERE isCurrent = 1
+            LIMIT 1
+        )
+    """)
+    fun getCurrentBasicoFlow(): Flow<BasicoEntity?>
 }

@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.gonzaloracergalan.portfolio.data.db.entity.HabilidadEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface HabilidadDAO {
@@ -27,4 +28,17 @@ interface HabilidadDAO {
 
     @Query("SELECT * FROM habilidad")
     suspend fun getAllHabilidades(): List<HabilidadEntity>
+
+    @Query(
+        """
+        SELECT * 
+        FROM habilidad WHERE resumeOwnerId = (
+            SELECT resumeOwnerId
+            FROM resumes
+            WHERE isCurrent = 1
+            LIMIT 1
+        )
+    """
+    )
+    fun getCurrentAllHabilidadesFlow(): Flow<List<HabilidadEntity>>
 }
