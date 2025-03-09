@@ -6,7 +6,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import com.gonzaloracergalan.portfolio.data.dt.dto.BasicoDTO
 import com.gonzaloracergalan.portfolio.data.dt.dto.CertificadoDTO
@@ -196,7 +198,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             PortfolioTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-
+                    Button(onClick = { setCurrent() }) {
+                        Text("Hola")
+                    }
                 }
             }
         }
@@ -207,6 +211,16 @@ class MainActivity : ComponentActivity() {
     // todo borrar
     // todo borrar
     private val jsonResumeWrapperRepository: JsonResumeWrapperRepository by inject()
+    private fun setCurrent() {
+        CoroutineScope(Dispatchers.IO).launch {
+            jsonResumeWrapperRepository.setCurrentResumeId(3)
+        }
+    }
+
+    // todo borrar
+    // todo borrar
+    // todo borrar
+    // todo borrar
     private fun pepe() {
         CoroutineScope(Dispatchers.IO).launch {
             val exampleDTO = JsonResumeWrapperDTO(

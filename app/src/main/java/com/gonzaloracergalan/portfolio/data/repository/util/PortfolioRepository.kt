@@ -10,7 +10,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.slf4j.LoggerFactory
 
-open class PortfolioRepository : KoinComponent {
+abstract class PortfolioRepository : KoinComponent {
 
     protected val portfolioRoomDatabase: PortfolioRoomDatabase by inject()
 

@@ -44,11 +44,34 @@ class JsonResumeWrapperRepository : PortfolioRepository() {
     private val trabajoDAO: TrabajoDAO by inject()
     private val voluntariadoDAO: VoluntariadoDAO by inject()
 
+    suspend fun setCurrentResumeId(resumeId: Long): List<RepositoryResponse> {
+        logger.trace("setCurrentResumeId: resumeId={}", resumeId)
+        val operations = mutableListOf<suspend () -> Int>()
+        // necesito que se seteen correctamente todas a false si o si antes de setear como actual
+        // un nuevo resume
+        operations.add {
+            logger.info("setCurrentResumeId: Setting all current resumes to false")
+            jsonResumeWrapperDAO.setAllCurrentToFalse()
+        }
+        operations.add {
+            logger.info("setCurrentResumeId: Setting current resume ($resumeId) to true")
+            jsonResumeWrapperDAO.setCurrentResume(resumeId)
+        }
+        val response = runTransactionalRoomOperation(operations)
+        logger.info("setCurrentResumeId: response={}", response)
+        return response
+    }
+
     suspend fun save(entity: JsonResumeWrapperEntity): RepositoryResponse =
         runNonTransactionalRoomOperation {
             logger.trace("save: {}", entity)
-            aqui comprobamos no se inserte con el isCurrent a true-
-            jsonResumeWrapperDAO.insertResume(entity)
+            if (jsonResumeWrapperDAO.isCurrentSetted()) {
+                logger.warn("save: There is already a current resume id setted to true, cannot save another one.")
+                RepositoryResponse.Error(RepositoryResponse.RepositoryErrorType.ROOM_RESTRICTION)
+            } else {
+                logger.info("save: Inserting new resume")
+                jsonResumeWrapperDAO.insertResume(entity)
+            }
         }
 
     suspend fun save(

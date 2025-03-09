@@ -1,6 +1,7 @@
 package com.gonzaloracergalan.portfolio.data.db.entity
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.gonzaloracergalan.portfolio.data.dt.dto.JsonResumeWrapperDTO
 

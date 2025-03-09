@@ -1,7 +1,6 @@
 package com.gonzaloracergalan.portfolio.data.di
 
 import androidx.room.Room
-import com.gonzaloracergalan.portfolio.data.datastore.CurrentJsonResumeDatastoreManager
 import com.gonzaloracergalan.portfolio.data.db.PortfolioRoomDatabase
 import com.gonzaloracergalan.portfolio.data.repository.BasicoRepository
 import com.gonzaloracergalan.portfolio.data.repository.CertificacionRepository
@@ -32,8 +31,6 @@ object DataModule : PortfolioKoinModule {
                     PortfolioRoomDatabase::class.java, "portfolio-database"
                 ).build()
             }
-            // datastores
-            single { CurrentJsonResumeDatastoreManager() }
             // room daos
             single { get<PortfolioRoomDatabase>().basicoDao() }
             single { get<PortfolioRoomDatabase>().certificacionDao() }
@@ -51,7 +48,6 @@ object DataModule : PortfolioKoinModule {
             single { get<PortfolioRoomDatabase>().voluntariadoDao() }
             // repositories
             single { JsonResumeWrapperRepository() }
-            single { CurrentJsonResumeRepository() }
             single { BasicoRepository() }
             single { CertificacionRepository() }
             single { EducacionRepository() }
