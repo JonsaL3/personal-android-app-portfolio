@@ -1,7 +1,7 @@
 package com.gonzaloracergalan.portfolio.domain.usecase
 
 import com.gonzaloracergalan.portfolio.data.repository.JsonResumeWrapperRepository
-import com.gonzaloracergalan.portfolio.domain.di.DomainResponse
+import com.gonzaloracergalan.portfolio.domain.util.UseCaseResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.koin.core.component.KoinComponent
@@ -15,16 +15,16 @@ class SetCurrentResumeIdUseCase : KoinComponent {
 
     private val jsonResumeWrapperRepository: JsonResumeWrapperRepository by inject()
 
-    operator fun invoke(resumeId: Long): Flow<DomainResponse> {
+    operator fun invoke(resumeId: Long): Flow<UseCaseResponse> {
         logger.info("invoke")
         return flow {
-            emit(DomainResponse.Loading)
+            emit(UseCaseResponse.Loading)
             try {
                 val response = jsonResumeWrapperRepository.setCurrentResumeId(resumeId)
-                emit(DomainResponse.Success)
+                emit(UseCaseResponse.Success)
             } catch (e: Exception) {
                 logger.error("invoke Error al establecer el id del currículum actual", e)
-                emit(DomainResponse.Error(DomainResponse.DomainErrorType.UNKNOWN))
+                emit(UseCaseResponse.Error(UseCaseResponse.UseCaseErrorType.UNKNOWN))
             }
         }
     }

@@ -6,6 +6,10 @@ import android.database.sqlite.SQLiteDiskIOException
 import android.database.sqlite.SQLiteReadOnlyDatabaseException
 import androidx.room.withTransaction
 import com.gonzaloracergalan.portfolio.data.db.PortfolioRoomDatabase
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.slf4j.LoggerFactory
@@ -19,11 +23,19 @@ abstract class PortfolioRepository : KoinComponent {
     }
 
     /**
+     * Mapeamos un flow cualquiera a una respuesta del repositorio con los errores tratados.
+     */
+    protected fun <T> Flow<T>.toRepositoryFlow() = this
+        .onStart { RepositoryResponse.Loading }
+        .map { RepositoryResponse.Success(it) as RepositoryResponse }
+        .catch { emit(getRepositoryResponseFromException(it)) }
+
+    /**
      * Metodo que ejecuta una operación de room y trata sus correspondientes excepciones.
      * Es Non Transactional porque en caso de querer ejecutar una transacción con varios DAOs
      * necesito que se propague la excepción y se haga rollback.
      */
-    suspend fun <T> runNonTransactionalRoomOperation(operation: suspend () -> T): RepositoryResponse {
+    protected suspend fun <T> runNonTransactionalRoomOperation(operation: suspend () -> T): RepositoryResponse {
         logger.trace("runNonTransactionalRoomOperation")
         // lanzamos la operacion a room para obtener el resultado
         val response = try {
@@ -49,7 +61,9 @@ abstract class PortfolioRepository : KoinComponent {
      * @return Lista de respuestas de las operaciones. Devuelve un único error si alguna de
      * las operaciones falla (debido a que se trata de una transaccion, o todas o ninguna).
      */
-    suspend fun <T> runTransactionalRoomOperation(operations: List<suspend () -> T>): List<RepositoryResponse> {
+    protected suspend fun <T> runTransactionalRoomOperation(
+        operations: List<suspend () -> T>
+    ): List<RepositoryResponse> {
         logger.trace("runTransactionalRoomOperation")
         // lanzamos las operaciones a room para obtener los resultados
         val responses: MutableList<RepositoryResponse> = mutableListOf()
@@ -83,7 +97,7 @@ abstract class PortfolioRepository : KoinComponent {
      * Metodo que convierte una excepción de room en una respuesta de error.
      */
     protected fun getRepositoryResponseFromException(e: Exception): RepositoryResponse {
-        logger.trace("getRepositoryResponseFromException: {}", e.message)
+        logger.trace("getRepositoryResponseFromException exception: {}", e.message)
         return when (e) {
             is SQLiteConstraintException -> RepositoryResponse.Error(
                 error = RepositoryResponse.RepositoryErrorType.ROOM_RESTRICTION
@@ -97,6 +111,28 @@ abstract class PortfolioRepository : KoinComponent {
 
             else -> RepositoryResponse.Error(
                 error = RepositoryResponse.RepositoryErrorType.ROOM_GENERIC
+            )
+        }
+    }
+
+    /**
+     * Metodo que convierte una excepción de room en una respuesta de error.
+     */
+    protected fun getRepositoryResponseFromException(e: Throwable): RepositoryResponse {
+        logger.trace("getRepositoryResponseFromException throwable: {}", e.message)
+        return when (e) {
+            is SQLiteConstraintException -> RepositoryResponse.Error(
+                error = RepositoryResponse.RepositoryErrorType.ROOM_RESTRICTION
+            )
+
+            is SQLiteDiskIOException,
+            is SQLiteDatabaseLockedException,
+            is SQLiteReadOnlyDatabaseException -> RepositoryResponse.Error(
+                error = RepositoryResponse.RepositoryErrorType.ROOM_IO
+            )
+
+            else -> RepositoryResponse.Error(
+                error = RepositoryResponse.RepositoryErrorType.UNKNOWN_ERROR
             )
         }
     }

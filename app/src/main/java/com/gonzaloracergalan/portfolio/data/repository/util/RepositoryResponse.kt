@@ -5,7 +5,8 @@ package com.gonzaloracergalan.portfolio.data.repository.util
  * u otro.
  */
 sealed class RepositoryResponse {
-    data class Success<T>(val data: T) : RepositoryResponse()
+    data object Loading : RepositoryResponse()
+    data class Success<T>(val data: T?) : RepositoryResponse()
     data class Error(val error: RepositoryErrorType) : RepositoryResponse()
 
     /**
@@ -16,7 +17,8 @@ sealed class RepositoryResponse {
         // errores relativos a room
         ROOM_RESTRICTION,
         ROOM_IO,
-        ROOM_GENERIC
+        ROOM_GENERIC,
         // todo añadir los errores de retrofit
+        UNKNOWN_ERROR
     }
 }

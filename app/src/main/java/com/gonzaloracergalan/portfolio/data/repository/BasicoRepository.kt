@@ -7,6 +7,7 @@ import com.gonzaloracergalan.portfolio.data.db.entity.BasicoEntity
 import com.gonzaloracergalan.portfolio.data.dt.dto.BasicoDTO
 import com.gonzaloracergalan.portfolio.data.repository.util.PortfolioRepository
 import com.gonzaloracergalan.portfolio.data.repository.util.RepositoryResponse
+import kotlinx.coroutines.flow.Flow
 import org.koin.core.component.inject
 import org.slf4j.LoggerFactory
 
@@ -18,7 +19,8 @@ class BasicoRepository : PortfolioRepository() {
     private val basicoDAO: BasicoDAO by inject()
     private val perfilDAO: PerfilDAO by inject()
 
-    val currentBasicoFlow = basicoDAO.getCurrentBasicoFlow()
+    val currentBasicoFlow: Flow<RepositoryResponse> = basicoDAO.getCurrentBasicoFlow()
+        .toRepositoryFlow()
 
     suspend fun save(entity: BasicoEntity) = runNonTransactionalRoomOperation {
         logger.trace("save: {}", entity)
