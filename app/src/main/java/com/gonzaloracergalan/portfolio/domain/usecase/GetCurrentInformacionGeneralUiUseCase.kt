@@ -5,23 +5,23 @@ import com.gonzaloracergalan.portfolio.data.repository.BasicoRepository
 import com.gonzaloracergalan.portfolio.domain.util.PortfolioUseCase
 import com.gonzaloracergalan.portfolio.domain.util.UseCaseResponse
 import com.gonzaloracergalan.portfolio.ui.model.DireccionUI
-import com.gonzaloracergalan.portfolio.ui.model.PerfilUI
+import com.gonzaloracergalan.portfolio.ui.model.InformacionGeneralUI
 import com.gonzaloracergalan.portfolio.ui.model.RedSocialUI
 import kotlinx.coroutines.flow.Flow
 import org.koin.core.component.inject
 import org.slf4j.LoggerFactory
 
-class GetCurrentPerfilUiUseCase : PortfolioUseCase() {
+class GetCurrentInformacionGeneralUiUseCase : PortfolioUseCase() {
     companion object {
-        private val logger = LoggerFactory.getLogger("GetCurrentPerfilUiUseCase")
+        private val logger = LoggerFactory.getLogger("GetCurrentInformacionGeneralUiUseCase")
     }
 
     private val basicoRepository: BasicoRepository by inject()
 
-    private val basicoWithPerfilesRelationToPerfilUi: (
+    private val basicoWithPerfilesRelationToInformacionGeneralUi: (
         BasicoWithPerfilesRelation,
-    ) -> PerfilUI = { basicoWithPerfiles: BasicoWithPerfilesRelation ->
-        PerfilUI(
+    ) -> InformacionGeneralUI = { basicoWithPerfiles: BasicoWithPerfilesRelation ->
+        InformacionGeneralUI(
             correo = basicoWithPerfiles.basico.correo ?: "ejemplo@ejemplo.es",
             cargoActual = basicoWithPerfiles.basico.etiqueta ?: "Trabajador X",
             imagen = null, // todo
@@ -50,7 +50,7 @@ class GetCurrentPerfilUiUseCase : PortfolioUseCase() {
     operator fun invoke(): Flow<UseCaseResponse> {
         logger.trace("invoke")
         return basicoRepository.currentBasicoWithPerfilesFlow.toUseCaseFlow(
-            successMapper = basicoWithPerfilesRelationToPerfilUi
+            successMapper = basicoWithPerfilesRelationToInformacionGeneralUi
         )
     }
 }

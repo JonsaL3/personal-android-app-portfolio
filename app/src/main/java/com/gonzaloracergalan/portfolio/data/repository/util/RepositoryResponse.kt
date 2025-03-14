@@ -18,6 +18,7 @@ sealed class RepositoryResponse {
         ROOM_RESTRICTION,
         ROOM_IO,
         ROOM_GENERIC,
+        ROOM_FAILED_TRANSACTION,
         // todo añadir los errores de retrofit
         UNKNOWN_ERROR
     }

@@ -19,7 +19,6 @@ import com.gonzaloracergalan.portfolio.data.db.entity.JsonResumeWrapperEntity
 import com.gonzaloracergalan.portfolio.data.dt.dto.JsonResumeWrapperDTO
 import com.gonzaloracergalan.portfolio.data.repository.util.PortfolioRepository
 import com.gonzaloracergalan.portfolio.data.repository.util.RepositoryResponse
-import kotlinx.coroutines.flow.map
 import org.koin.core.component.inject
 import org.slf4j.LoggerFactory
 
@@ -44,7 +43,7 @@ class JsonResumeWrapperRepository : PortfolioRepository() {
     private val trabajoDAO: TrabajoDAO by inject()
     private val voluntariadoDAO: VoluntariadoDAO by inject()
 
-    suspend fun setCurrentResumeId(resumeId: Long): List<RepositoryResponse> {
+    suspend fun setCurrentResumeId(resumeId: Long): RepositoryResponse {
         logger.trace("setCurrentResumeId: resumeId={}", resumeId)
         val operations = mutableListOf<suspend () -> Int>()
         // necesito que se seteen correctamente todas a false si o si antes de setear como actual
@@ -57,7 +56,19 @@ class JsonResumeWrapperRepository : PortfolioRepository() {
             logger.info("setCurrentResumeId: Setting current resume ($resumeId) to true")
             jsonResumeWrapperDAO.setCurrentResume(resumeId)
         }
-        val response = runTransactionalRoomOperation(operations)
+
+        // ejecutamos la transaccion y mapeamos a una unica repo response, en este caso a las
+        // capas externas les da igual la lista de responses, solo interesa la operación
+        // en su conjunto.
+        val transactionsResponses = runTransactionalRoomOperation(operations)
+        val response = if (transactionsResponses.all { it is RepositoryResponse.Success<*> }) {
+            logger.info("setCurrentResumeId: All operations were successful")
+            RepositoryResponse.Success(resumeId)
+        } else {
+            logger.warn("setCurrentResumeId: Some operations failed")
+            RepositoryResponse.Error(RepositoryResponse.RepositoryErrorType.ROOM_FAILED_TRANSACTION)
+        }
+
         logger.info("setCurrentResumeId: response={}", response)
         return response
     }

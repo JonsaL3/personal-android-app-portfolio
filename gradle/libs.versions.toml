@@ -18,6 +18,8 @@ koin-bom = "4.0.1"
 # LOGGING
 slf4j = "2.0.17"
 logback = "3.0.0"
+# NAVIGATION
+navigation = "2.8.9"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -48,6 +50,8 @@ koin-android-compose = { module = "io.insert-koin:koin-androidx-compose", versio
 # LOGGING
 logging-slf4j = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j" }
 logging-logback = { group = "com.github.tony19", name = "logback-android", version.ref = "logback" }
+# NAVIGATION
+androidx-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

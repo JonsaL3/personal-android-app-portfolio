@@ -15,9 +15,12 @@ sealed class UseCaseResponse {
      * la capa de dominio.
      */
     enum class UseCaseErrorType {
+        // problemas con los datos que envia el usuario
         BAD_REQUEST_PARAMS,
+        // problemas con la base de datos interna
         INTERNAL_DATABASE_ERROR,
         INTERNAL_DATABASE_RESTRICTION,
+        // todo programar los errores de red
         // todo añadir los errores remotos y los que puedan faltar
         UNKNOWN_ERROR
     }

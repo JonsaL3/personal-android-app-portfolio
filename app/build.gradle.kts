@@ -73,4 +73,6 @@ dependencies {
     // LOGGING
     implementation(libs.logging.slf4j)
     implementation(libs.logging.logback)
+    // NAVIGATION
+    implementation(libs.androidx.navigation)
 }

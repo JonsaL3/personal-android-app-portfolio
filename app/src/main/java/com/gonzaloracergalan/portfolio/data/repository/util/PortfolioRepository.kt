@@ -35,7 +35,9 @@ abstract class PortfolioRepository : KoinComponent {
      * Es Non Transactional porque en caso de querer ejecutar una transacción con varios DAOs
      * necesito que se propague la excepción y se haga rollback.
      */
-    protected suspend fun <T> runNonTransactionalRoomOperation(operation: suspend () -> T): RepositoryResponse {
+    protected suspend fun <T> runNonTransactionalRoomOperation(
+        operation: suspend () -> T
+    ): RepositoryResponse {
         logger.trace("runNonTransactionalRoomOperation")
         // lanzamos la operacion a room para obtener el resultado
         val response = try {

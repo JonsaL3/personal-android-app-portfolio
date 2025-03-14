@@ -1,6 +1,6 @@
 package com.gonzaloracergalan.portfolio.ui.model
 
-data class PerfilUI(
+data class InformacionGeneralUI(
     val correo: String,
     val cargoActual: String,
     val imagen: String?,
