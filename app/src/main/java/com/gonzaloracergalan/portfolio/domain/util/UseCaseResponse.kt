@@ -16,7 +16,6 @@ sealed class UseCaseResponse {
      */
     enum class UseCaseErrorType {
         BAD_REQUEST_PARAMS,
-        CAST_BETWEEN_UI_TO_DATA_ERROR,
         INTERNAL_DATABASE_ERROR,
         INTERNAL_DATABASE_RESTRICTION,
         // todo añadir los errores remotos y los que puedan faltar

@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.gonzaloracergalan.portfolio.data.db.entity.BasicoEntity
+import com.gonzaloracergalan.portfolio.data.db.relation.BasicoWithPerfilesRelation
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -36,4 +37,15 @@ interface BasicoDAO {
         )
     """)
     fun getCurrentBasicoFlow(): Flow<BasicoEntity?>
+
+    @Query("""
+        SELECT * 
+        FROM basico WHERE resumeOwnerId = (
+            SELECT resumeOwnerId
+            FROM resumes
+            WHERE isCurrent = 1
+            LIMIT 1
+        )
+    """)
+    fun getCurrentBasicoWithPerfilesFlow(): Flow<List<BasicoWithPerfilesRelation>>
 }

@@ -15,9 +15,6 @@ class PerfilRepository : PortfolioRepository() {
 
     private val dao: PerfilDAO by inject()
 
-    val currentPerfilesOfCurrentBasicoFlow = dao.getCurrentAllPerfilesOfCurrentBasicoFlow()
-        .toRepositoryFlow()
-
     suspend fun save(entity: PerfilEntity) = runNonTransactionalRoomOperation {
         logger.trace("save: {}", entity)
         dao.insertPerfil(entity)

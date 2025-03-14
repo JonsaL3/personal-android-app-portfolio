@@ -19,7 +19,7 @@ class BasicoRepository : PortfolioRepository() {
     private val basicoDAO: BasicoDAO by inject()
     private val perfilDAO: PerfilDAO by inject()
 
-    val currentBasicoFlow: Flow<RepositoryResponse> = basicoDAO.getCurrentBasicoFlow()
+    val currentBasicoWithPerfilesFlow: Flow<RepositoryResponse> = basicoDAO.getCurrentBasicoWithPerfilesFlow()
         .toRepositoryFlow()
 
     suspend fun save(entity: BasicoEntity) = runNonTransactionalRoomOperation {

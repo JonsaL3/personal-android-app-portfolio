@@ -96,30 +96,8 @@ abstract class PortfolioRepository : KoinComponent {
     /**
      * Metodo que convierte una excepción de room en una respuesta de error.
      */
-    protected fun getRepositoryResponseFromException(e: Exception): RepositoryResponse {
-        logger.trace("getRepositoryResponseFromException exception: {}", e.message)
-        return when (e) {
-            is SQLiteConstraintException -> RepositoryResponse.Error(
-                error = RepositoryResponse.RepositoryErrorType.ROOM_RESTRICTION
-            )
-
-            is SQLiteDiskIOException,
-            is SQLiteDatabaseLockedException,
-            is SQLiteReadOnlyDatabaseException -> RepositoryResponse.Error(
-                error = RepositoryResponse.RepositoryErrorType.ROOM_IO
-            )
-
-            else -> RepositoryResponse.Error(
-                error = RepositoryResponse.RepositoryErrorType.ROOM_GENERIC
-            )
-        }
-    }
-
-    /**
-     * Metodo que convierte una excepción de room en una respuesta de error.
-     */
     protected fun getRepositoryResponseFromException(e: Throwable): RepositoryResponse {
-        logger.trace("getRepositoryResponseFromException throwable: {}", e.message)
+        logger.warn("getRepositoryResponseFromException throwable: {}", e.message)
         return when (e) {
             is SQLiteConstraintException -> RepositoryResponse.Error(
                 error = RepositoryResponse.RepositoryErrorType.ROOM_RESTRICTION
