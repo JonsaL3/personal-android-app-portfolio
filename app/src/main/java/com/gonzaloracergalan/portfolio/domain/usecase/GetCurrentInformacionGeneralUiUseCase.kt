@@ -3,7 +3,7 @@ package com.gonzaloracergalan.portfolio.domain.usecase
 import com.gonzaloracergalan.portfolio.data.db.relation.BasicoWithPerfilesRelation
 import com.gonzaloracergalan.portfolio.data.repository.BasicoRepository
 import com.gonzaloracergalan.portfolio.domain.util.PortfolioUseCase
-import com.gonzaloracergalan.portfolio.domain.util.UseCaseResponse
+import com.gonzaloracergalan.portfolio.common.response.UseCaseResponse
 import com.gonzaloracergalan.portfolio.ui.model.DireccionUI
 import com.gonzaloracergalan.portfolio.ui.model.InformacionGeneralUI
 import com.gonzaloracergalan.portfolio.ui.model.RedSocialUI
@@ -21,6 +21,7 @@ class GetCurrentInformacionGeneralUiUseCase : PortfolioUseCase() {
     private val basicoWithPerfilesRelationToInformacionGeneralUi: (
         BasicoWithPerfilesRelation,
     ) -> InformacionGeneralUI = { basicoWithPerfiles: BasicoWithPerfilesRelation ->
+        logger.trace("basicoWithPerfilesRelationToInformacionGeneralUi: {}", basicoWithPerfiles)
         InformacionGeneralUI(
             correo = basicoWithPerfiles.basico.correo ?: "ejemplo@ejemplo.es",
             cargoActual = basicoWithPerfiles.basico.etiqueta ?: "Trabajador X",

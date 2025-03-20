@@ -75,4 +75,6 @@ dependencies {
     implementation(libs.logging.logback)
     // NAVIGATION
     implementation(libs.androidx.navigation)
+    // ICONS
+    implementation(libs.icons)
 }

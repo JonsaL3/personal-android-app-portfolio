@@ -1,6 +1,7 @@
 package com.gonzaloracergalan.portfolio.domain.util
 
-import com.gonzaloracergalan.portfolio.data.repository.util.RepositoryResponse
+import com.gonzaloracergalan.portfolio.common.response.RepositoryResponse
+import com.gonzaloracergalan.portfolio.common.response.UseCaseResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -45,7 +46,9 @@ abstract class PortfolioUseCase : KoinComponent {
         successMapper: (REPO_TYPE) -> UI_MODEL
     ) = this.map { repositoryResponse ->
         mapRepositoryResponseToUseCaseResponse(repositoryResponse, successMapper)
-    }.catch { getUseCaseResponseFromException(it) }
+    }.catch {
+        emit(getUseCaseResponseFromException(it))
+    }
 
     /**
      * Función que mapea la respuesta del repositorio a la respuesta del use case.
@@ -78,6 +81,7 @@ abstract class PortfolioUseCase : KoinComponent {
         logger.trace("getUseCaseResponseFromException exception: {}", e.message)
         val response = when (e) {
             // todo tratar algun caso que pueda darse.
+            is ClassCastException -> UseCaseResponse.Error(UseCaseResponse.UseCaseErrorType.RESPONSE_MAPPER_PROBLEM)
             else -> UseCaseResponse.Error(UseCaseResponse.UseCaseErrorType.UNKNOWN_ERROR)
         }
         logger.warn("getUseCaseResponseFromException response: {}", response)

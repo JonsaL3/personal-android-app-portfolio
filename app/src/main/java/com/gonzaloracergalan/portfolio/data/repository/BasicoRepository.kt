@@ -5,8 +5,8 @@ import com.gonzaloracergalan.portfolio.data.db.dao.BasicoDAO
 import com.gonzaloracergalan.portfolio.data.db.dao.PerfilDAO
 import com.gonzaloracergalan.portfolio.data.db.entity.BasicoEntity
 import com.gonzaloracergalan.portfolio.data.dt.dto.BasicoDTO
-import com.gonzaloracergalan.portfolio.data.repository.util.PortfolioRepository
-import com.gonzaloracergalan.portfolio.data.repository.util.RepositoryResponse
+import com.gonzaloracergalan.portfolio.data.util.PortfolioRepository
+import com.gonzaloracergalan.portfolio.common.response.RepositoryResponse
 import kotlinx.coroutines.flow.Flow
 import org.koin.core.component.inject
 import org.slf4j.LoggerFactory

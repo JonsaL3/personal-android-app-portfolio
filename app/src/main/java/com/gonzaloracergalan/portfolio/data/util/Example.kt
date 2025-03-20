@@ -1,4 +1,4 @@
-package com.gonzaloracergalan.portfolio.data.repository.util
+package com.gonzaloracergalan.portfolio.data.util
 
 import com.gonzaloracergalan.portfolio.data.dt.dto.BasicoDTO
 import com.gonzaloracergalan.portfolio.data.dt.dto.CertificadoDTO

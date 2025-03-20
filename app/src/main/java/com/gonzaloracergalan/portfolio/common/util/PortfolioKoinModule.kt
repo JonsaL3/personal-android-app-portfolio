@@ -1,4 +1,4 @@
-package com.gonzaloracergalan.portfolio.util
+package com.gonzaloracergalan.portfolio.common.util
 
 import org.koin.core.module.Module
 

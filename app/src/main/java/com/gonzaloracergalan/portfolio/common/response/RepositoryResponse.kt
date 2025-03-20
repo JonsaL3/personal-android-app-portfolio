@@ -1,4 +1,4 @@
-package com.gonzaloracergalan.portfolio.data.repository.util
+package com.gonzaloracergalan.portfolio.common.response
 
 /**
  * Las respuestas del repo pueden ser de varios tipos y en funcion de ellos devolvemos un dato

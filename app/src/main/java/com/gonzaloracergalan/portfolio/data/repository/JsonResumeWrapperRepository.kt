@@ -17,8 +17,8 @@ import com.gonzaloracergalan.portfolio.data.db.dao.TrabajoDAO
 import com.gonzaloracergalan.portfolio.data.db.dao.VoluntariadoDAO
 import com.gonzaloracergalan.portfolio.data.db.entity.JsonResumeWrapperEntity
 import com.gonzaloracergalan.portfolio.data.dt.dto.JsonResumeWrapperDTO
-import com.gonzaloracergalan.portfolio.data.repository.util.PortfolioRepository
-import com.gonzaloracergalan.portfolio.data.repository.util.RepositoryResponse
+import com.gonzaloracergalan.portfolio.data.util.PortfolioRepository
+import com.gonzaloracergalan.portfolio.common.response.RepositoryResponse
 import org.koin.core.component.inject
 import org.slf4j.LoggerFactory
 

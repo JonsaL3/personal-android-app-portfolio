@@ -3,8 +3,8 @@ package com.gonzaloracergalan.portfolio.data.repository
 import com.gonzaloracergalan.portfolio.data.db.dao.TrabajoDAO
 import com.gonzaloracergalan.portfolio.data.db.entity.TrabajoEntity
 import com.gonzaloracergalan.portfolio.data.dt.dto.TrabajoDTO
-import com.gonzaloracergalan.portfolio.data.repository.util.PortfolioRepository
-import com.gonzaloracergalan.portfolio.data.repository.util.RepositoryResponse
+import com.gonzaloracergalan.portfolio.data.util.PortfolioRepository
+import com.gonzaloracergalan.portfolio.common.response.RepositoryResponse
 import org.koin.core.component.inject
 import org.slf4j.LoggerFactory
 

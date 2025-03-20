@@ -16,7 +16,7 @@ import com.gonzaloracergalan.portfolio.data.repository.PublicacionRepository
 import com.gonzaloracergalan.portfolio.data.repository.ReferenciaRepository
 import com.gonzaloracergalan.portfolio.data.repository.TrabajoRepository
 import com.gonzaloracergalan.portfolio.data.repository.VoluntariadoRepository
-import com.gonzaloracergalan.portfolio.util.PortfolioKoinModule
+import com.gonzaloracergalan.portfolio.common.util.PortfolioKoinModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module
 import org.koin.dsl.module

@@ -2,7 +2,7 @@ package com.gonzaloracergalan.portfolio.domain.usecase
 
 import com.gonzaloracergalan.portfolio.data.repository.JsonResumeWrapperRepository
 import com.gonzaloracergalan.portfolio.domain.util.PortfolioUseCase
-import com.gonzaloracergalan.portfolio.domain.util.UseCaseResponse
+import com.gonzaloracergalan.portfolio.common.response.UseCaseResponse
 import org.koin.core.component.inject
 import org.slf4j.LoggerFactory
 

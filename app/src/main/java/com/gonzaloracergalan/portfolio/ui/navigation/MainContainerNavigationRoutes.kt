@@ -1,4 +1,4 @@
-package com.gonzaloracergalan.portfolio.ui.main.navigation
+package com.gonzaloracergalan.portfolio.ui.navigation
 
 sealed class MainContainerNavigationRoutes(val route: String) {
     data object InformacionGeneralRoute : MainContainerNavigationRoutes("${MainContainerNavigationRoutes::class.java.simpleName}.${InformacionGeneralRoute::class.java.simpleName}")

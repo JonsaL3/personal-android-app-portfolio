@@ -1,4 +1,4 @@
-package com.gonzaloracergalan.portfolio.domain.util
+package com.gonzaloracergalan.portfolio.common.response
 
 /**
  * Las respuestas del repo pueden ser de varios tipos y en funcion de ellos devolvemos un dato
@@ -20,6 +20,8 @@ sealed class UseCaseResponse {
         // problemas con la base de datos interna
         INTERNAL_DATABASE_ERROR,
         INTERNAL_DATABASE_RESTRICTION,
+        // problemas con la respuesta
+        RESPONSE_MAPPER_PROBLEM,
         // todo programar los errores de red
         // todo añadir los errores remotos y los que puedan faltar
         UNKNOWN_ERROR

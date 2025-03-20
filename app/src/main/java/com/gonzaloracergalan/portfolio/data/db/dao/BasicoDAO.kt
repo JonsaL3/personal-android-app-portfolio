@@ -47,5 +47,5 @@ interface BasicoDAO {
             LIMIT 1
         )
     """)
-    fun getCurrentBasicoWithPerfilesFlow(): Flow<List<BasicoWithPerfilesRelation>>
+    fun getCurrentBasicoWithPerfilesFlow(): Flow<BasicoWithPerfilesRelation>
 }

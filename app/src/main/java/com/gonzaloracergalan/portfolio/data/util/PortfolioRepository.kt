@@ -1,10 +1,11 @@
-package com.gonzaloracergalan.portfolio.data.repository.util
+package com.gonzaloracergalan.portfolio.data.util
 
 import android.database.sqlite.SQLiteConstraintException
 import android.database.sqlite.SQLiteDatabaseLockedException
 import android.database.sqlite.SQLiteDiskIOException
 import android.database.sqlite.SQLiteReadOnlyDatabaseException
 import androidx.room.withTransaction
+import com.gonzaloracergalan.portfolio.common.response.RepositoryResponse
 import com.gonzaloracergalan.portfolio.data.db.PortfolioRoomDatabase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
