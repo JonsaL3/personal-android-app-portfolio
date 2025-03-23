@@ -10,42 +10,20 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.School
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.School
-import androidx.compose.material.icons.outlined.Star
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.gonzaloracergalan.portfolio.R
-import com.gonzaloracergalan.portfolio.ui.model.BottomBarUI
-import com.gonzaloracergalan.portfolio.ui.navigation.MainContainerNavigationRoutes
+import com.gonzaloracergalan.portfolio.data.util.Example
 import com.gonzaloracergalan.portfolio.ui.navigation.MainContainerNavigationWrapper
 import com.gonzaloracergalan.portfolio.ui.theme.PortfolioTheme
-import com.gonzaloracergalan.portfolio.ui.view.component.FloatingBottomBar
-import com.gonzaloracergalan.portfolio.ui.view.component.FloatingBottomBarItem
+import com.gonzaloracergalan.portfolio.ui.view.component.TransparentCircledTopBar
 import com.gonzaloracergalan.portfolio.ui.viewmodel.MainViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.slf4j.LoggerFactory
 
 /**
@@ -190,65 +168,30 @@ import org.slf4j.LoggerFactory
  *   ]
  * }
  */
-class MainActivity : ComponentActivity() {
+class MainActivity : ComponentActivity(), KoinComponent {
     companion object {
         private val logger = LoggerFactory.getLogger("MainActivity")
     }
 
     private val mainViewModel: MainViewModel by viewModels()
 
-    private val showBottomBarRoutes = listOf(
-        MainContainerNavigationRoutes.InformacionGeneralRoute.route,
-        MainContainerNavigationRoutes.EstudiosRoute.route,
-        MainContainerNavigationRoutes.ExperienciaRoute.route,
-        MainContainerNavigationRoutes.MasSobreMiRoute.route
-    )
+    // todo borrar example
+    private val example: Example by inject()
+    // todo borrar example
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         logger.info("onCreate")
+        // todo borrar example
+        example
+        mainViewModel.setCurrentResumeId(4L)
+        // todo borrar example
         enableEdgeToEdge()
-
-        mainViewModel.setCurrentResumeId(1L)
-
-        // todo temporal
-        // todo temporal
-        /*var bool = false
-        CoroutineScope(Dispatchers.IO).launch {
-            while(isActive) {
-                delay(1000)
-                bool = !bool
-                if (bool) {
-                    mainViewModel.setCurrentResumeId(1L)
-                } else {
-                    mainViewModel.setCurrentResumeId(100L)
-                }
-            }
-        }*/
-        // todo temporal
-        // todo temporal
-
         setContent {
             PortfolioTheme {
-                val navHostController = rememberNavController()
-                logger.debug("onCreate Current destination: ${navHostController.currentDestination?.route}")
-                Scaffold(
-                    modifier = Modifier.background(Color.White),
-                ) { padding ->
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.BottomCenter
-                    ) {
-                        MainContainerNavigationWrapper(navHostController, padding)
-                        // no pongo la bottombar en el scaffold por un simple motivo, y es que no ocupa toda la parte inferior, es flotante y quiero que se muestre
-                        // encima de la vista. Si la pongo en el scaffold, se mostrará debajo de la vista y se verá feo.
-                        MainBottomBar(
-                            navController = navHostController,
-                            paddingValues = PaddingValues(16.dp),
-                            isShow = showBottomBarRoutes.contains(navHostController.currentDestination?.route ?: MainContainerNavigationRoutes.InformacionGeneralRoute.route)
-                        )
-                    }
-                }
+                // No meto la topbar en el scaffold porque es custom y va a tener cosas que no
+                // terminan de adaptarse
+                Scaffold { padding -> MainContent(padding) }
             }
         }
     }
@@ -275,78 +218,39 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MainBottomBar(
-    navController: NavController,
-    paddingValues: PaddingValues = PaddingValues(0.dp),
-    isShow: Boolean = true
-) {
-    if (isShow) {
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentDestination = navBackStackEntry?.destination
-
-        // Elementos de nuestra BottomBar
-        val bottomBarItems = listOf(
-            // TODO esto deberia de darmelo un useCase... porque puede que no tenga ciertas categorias...
-            BottomBarUI(
-                route = MainContainerNavigationRoutes.InformacionGeneralRoute.route,
-                title = stringResource(R.string.mainactivity_general),
-                unselectedIcon = Icons.Outlined.Person,
-                selectedIcon = Icons.Filled.Person
-            ),
-            BottomBarUI(
-                route = MainContainerNavigationRoutes.EstudiosRoute.route,
-                title = stringResource(R.string.mainactivity_estudios),
-                unselectedIcon = Icons.Outlined.School,
-                selectedIcon = Icons.Filled.School
-            ),
-            BottomBarUI(
-                route = MainContainerNavigationRoutes.ExperienciaRoute.route,
-                title = stringResource(R.string.mainactivity_experiencia),
-                unselectedIcon = Icons.Outlined.Star,
-                selectedIcon = Icons.Filled.Star
-            ),
-            BottomBarUI(
-                route = MainContainerNavigationRoutes.MasSobreMiRoute.route,
-                title = stringResource(R.string.mainactivity_massobremi),
-                unselectedIcon = Icons.Outlined.Add,
-                selectedIcon = Icons.Filled.Add
-            ),
+private fun MainContent(paddingValues: PaddingValues) {
+    val navHostController = rememberNavController()
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White),
+        contentAlignment = Alignment.TopCenter
+    ) {
+        // Pintamos encima de tod.o el contenido
+        MainContainerNavigationWrapper(
+            navController = navHostController,
+            paddingValues = PaddingValues(
+                vertical = paddingValues.calculateTopPadding() + 72.dp,
+                horizontal = 16.dp
+            )
         )
-
-        // La bottombar en sí
-        FloatingBottomBar(
-            modifier = Modifier.padding(paddingValues),
-        ) {
-            bottomBarItems.forEach { item ->
-                FloatingBottomBarItem(
-                    selected = currentDestination?.hierarchy?.any { it.route == item.route } == true,
-                    unSelectedIcon = {
-                        Icon(
-                            modifier = Modifier.size(24.dp),
-                            imageVector = item.unselectedIcon,
-                            contentDescription = item.title,
-                        )
-                    },
-                    selectedIcon = {
-                        Icon(
-                            modifier = Modifier.size(24.dp),
-                            imageVector = item.selectedIcon,
-                            contentDescription = item.title,
-                        )
-                    },
-                    onClick = {
-                        navController.navigate(item.route) {
-                            navController.graph.startDestinationRoute?.let { route ->
-                                popUpTo(route) {
-                                    saveState = true
-                                }
-                            }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    }
-                )
-            }
-        }
+        // la topbar ha de estar superpuesta al contenido
+        MainTopBar(
+            Modifier.padding(
+                top = paddingValues.calculateTopPadding(),
+                start = 16.dp,
+                end = 16.dp
+            )
+        )
     }
+}
+
+@Composable
+private fun MainTopBar(modifier: Modifier = Modifier) {
+    TransparentCircledTopBar(
+        modifier = modifier,
+        onHamburguerClicked = {},
+        onPhoneNumerClicked = {},
+        onEmailClicked = {}
+    )
 }

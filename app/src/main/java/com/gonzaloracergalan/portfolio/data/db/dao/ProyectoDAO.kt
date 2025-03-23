@@ -33,7 +33,7 @@ interface ProyectoDAO {
         """
         SELECT * 
         FROM proyecto WHERE resumeOwnerId = (
-            SELECT resumeOwnerId
+            SELECT resumeId
             FROM resumes
             WHERE isCurrent = 1
             LIMIT 1

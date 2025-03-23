@@ -17,6 +17,7 @@ import com.gonzaloracergalan.portfolio.data.repository.ReferenciaRepository
 import com.gonzaloracergalan.portfolio.data.repository.TrabajoRepository
 import com.gonzaloracergalan.portfolio.data.repository.VoluntariadoRepository
 import com.gonzaloracergalan.portfolio.common.util.PortfolioKoinModule
+import com.gonzaloracergalan.portfolio.data.util.Example
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -61,5 +62,7 @@ object DataModule : PortfolioKoinModule {
             single { ReferenciaRepository() }
             single { TrabajoRepository() }
             single { VoluntariadoRepository() }
+            // ejemplo de datos
+            single { Example() }
         }
 }

@@ -15,34 +15,36 @@ import com.gonzaloracergalan.portfolio.data.dt.dto.ReferenciaDTO
 import com.gonzaloracergalan.portfolio.data.dt.dto.TrabajoDTO
 import com.gonzaloracergalan.portfolio.data.dt.dto.UbicacionDTO
 import com.gonzaloracergalan.portfolio.data.dt.dto.VoluntariadoDTO
+import com.gonzaloracergalan.portfolio.data.repository.JsonResumeWrapperRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-// TODO BORRAR
-// TODO BORRAR
-// TODO BORRAR
-// TODO BORRAR
-// TODO BORRAR
-object Example {
-    // TODO BORRAR
-    // TODO BORRAR
-    // TODO BORRAR
-    // TODO BORRAR
-    // TODO BORRAR
+class Example : KoinComponent {
+    private val saver: JsonResumeWrapperRepository by inject()
+
     init {
         CoroutineScope(Dispatchers.IO).launch {
             val exampleDTO = JsonResumeWrapperDTO(
                 basico = BasicoDTO(
                     correo = "example@example.es",
-                    etiqueta = "example",
+                    etiqueta = "Desarrollador Android Senior",
                     imagen = "example",
-                    nombre = "example",
+                    nombre = "Gonzalo Racero Galán",
                     perfiles = listOf(
                         PerfilDTO("example", "example", "example"),
                         PerfilDTO("example2", "example2", "example2")
                     ),
-                    resumen = "example",
+                    resumen = "Soy Gonzalo, desarrollador especializado en Android con experiencia en la creación de soluciones nativas.\n" +
+                            "A lo largo de mi trayectoria he trabajado en proyectos que abarcan desde medios de pago hasta gestión de almacenes, integrando servicios y estableciendo comunicación interproceso mediante AIDL.\n" +
+                            "\n" +
+                            "Soy Gonzalo, desarrollador especializado en Android con experiencia en la creación de soluciones nativas.\n" +
+                            "A lo largo de mi trayectoria he trabajado en proyectos que abarcan desde medios de pago hasta gestión de almacenes, integrando servicios y estableciendo comunicación interproceso mediante AIDL.\n" +
+                            "\n" +
+                            "Soy Gonzalo, desarrollador especializado en Android con experiencia en la creación de soluciones nativas.\n" +
+                            "A lo largo de mi trayectoria he trabajado en proyectos que abarcan desde medios de pago hasta gestión de almacenes, integrando servicios y estableciendo comunicación interproceso mediante AIDL.",
                     telefono = "example",
                     ubicacion = UbicacionDTO(
                         codigoPostal = "example",
@@ -185,7 +187,7 @@ object Example {
                     )
                 )
             )
-
+            saver.save(dto = exampleDTO)
         }
     }
 
