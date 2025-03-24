@@ -17,7 +17,7 @@ import com.gonzaloracergalan.portfolio.R
 fun BoxWithBackgroundAnimatedImage(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
-) {
+) { // todo Blur y desplazamiento de la imagen de fondo
     Box(
         modifier = modifier.fillMaxSize(),
     ) {

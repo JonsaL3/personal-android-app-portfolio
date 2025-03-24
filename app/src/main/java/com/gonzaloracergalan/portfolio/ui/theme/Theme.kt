@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 
 private val ColorPalette = darkColorScheme(
     primary = VerdePrincipal,
+    onPrimary = BlancoPrincipal,
     background = NegroPrincipal,
     onBackground = BlancoPrincipal,
 )

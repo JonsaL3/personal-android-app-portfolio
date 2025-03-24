@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">portfolio</string>
-    <string name="mainactivity_general">General</string>
-    <string name="mainactivity_estudios">Estudios</string>
-    <string name="mainactivity_experiencia">Experiencia</string>
-    <string name="mainactivity_massobremi">Más sobre mí</string>
+    <string name="informaciongeneralscreen_mostrarmas">Mostrar más</string>
+    <string name="informaciongeneralscreen_mostrarmenos">Mostrar menos</string>
 </resources>
