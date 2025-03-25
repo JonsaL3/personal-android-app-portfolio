@@ -5,6 +5,7 @@ enum class ActiveResumeSection {
     CERTIFICADOS,
     EDUCACION,
     HABILIDAD,
+    PREMIO,
     IDIOMA,
     INTERES,
     PROYECTO,
@@ -12,5 +13,4 @@ enum class ActiveResumeSection {
     REFERENCIA,
     TRABAJO,
     VOLUNTARIADO,
-    PERFIL
 }

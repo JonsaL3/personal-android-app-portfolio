@@ -24,7 +24,6 @@ fun MainContainerNavigationWrapper(
         navController = navController,
         startDestination = MainContainerNavigationRoutes.InformacionGeneralRoute.route,
     ) {
-        // TODO IF SECCION TIENE DATOS...
         composable(MainContainerNavigationRoutes.InformacionGeneralRoute.route) {
             InformacionGeneralScreen(paddingValues)
         }
@@ -33,6 +32,18 @@ fun MainContainerNavigationWrapper(
         }
         composable(MainContainerNavigationRoutes.ExperienciaRoute.route) {
             ExperienciaScreen(paddingValues)
+        }
+        composable(MainContainerNavigationRoutes.PremiosCertificadosRoute.route) {
+
+        }
+        composable(MainContainerNavigationRoutes.PublicacionesRoute.route) {
+
+        }
+        composable(MainContainerNavigationRoutes.ProyectosRoute.route) {
+
+        }
+        composable(MainContainerNavigationRoutes.MasSobreMiRoute.route) {
+
         }
     }
 }

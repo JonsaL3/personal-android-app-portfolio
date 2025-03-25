@@ -43,6 +43,9 @@ class JsonResumeWrapperRepository : PortfolioRepository() {
     private val trabajoDAO: TrabajoDAO by inject()
     private val voluntariadoDAO: VoluntariadoDAO by inject()
 
+    val currentActiveResumeSectionsFlow = jsonResumeWrapperDAO.getCurrentActiveResumeSections()
+        .toRepositoryFlow()
+
     suspend fun setCurrentResumeId(resumeId: Long): RepositoryResponse {
         logger.trace("setCurrentResumeId: resumeId={}", resumeId)
         val operations = mutableListOf<suspend () -> Int>()
