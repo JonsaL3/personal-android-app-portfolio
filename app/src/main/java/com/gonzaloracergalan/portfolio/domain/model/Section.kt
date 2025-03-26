@@ -1,6 +1,6 @@
-package com.gonzaloracergalan.portfolio.data.db.calculated
+package com.gonzaloracergalan.portfolio.domain.model
 
-enum class ActiveResumeSection {
+enum class Section {
     BASICO,
     CERTIFICADOS,
     EDUCACION,

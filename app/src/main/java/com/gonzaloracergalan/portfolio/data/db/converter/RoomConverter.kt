@@ -1,7 +1,7 @@
 package com.gonzaloracergalan.portfolio.data.db.converter
 
 import androidx.room.TypeConverter
-import com.gonzaloracergalan.portfolio.data.db.calculated.ActiveResumeSection
+import com.gonzaloracergalan.portfolio.data.db.calculated.ActiveResumeSectionsCalculated
 import kotlinx.serialization.json.Json
 
 class RoomConverter {
@@ -16,16 +16,16 @@ class RoomConverter {
     }
 
     @TypeConverter
-    fun fromActiveResumeSectionsList(value: String?): List<ActiveResumeSection> {
+    fun fromActiveResumeSectionsList(value: String?): List<ActiveResumeSectionsCalculated.Section> {
         return value
             ?.split(",")
             ?.filter { it.isNotEmpty() }
-            ?.map { ActiveResumeSection.valueOf(it) }
+            ?.map { ActiveResumeSectionsCalculated.Section.valueOf(it) }
             ?: emptyList()
     }
 
     @TypeConverter
-    fun activeResumeSectionsListToString(list: List<ActiveResumeSection>?): String {
+    fun activeResumeSectionsListToString(list: List<ActiveResumeSectionsCalculated.Section>?): String {
         return list?.joinToString(",") ?: ""
     }
 }

@@ -28,8 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.gonzaloracergalan.portfolio.R
-import com.gonzaloracergalan.portfolio.ui.model.InformacionGeneralUI
-import com.gonzaloracergalan.portfolio.ui.state.GetCurrentInformacionGeneralState
+import com.gonzaloracergalan.portfolio.ui.state.InformacionGeneralState
 import com.gonzaloracergalan.portfolio.ui.theme.GrisTextos
 import com.gonzaloracergalan.portfolio.ui.view.component.BoxWithBackgroundAnimatedImage
 import com.gonzaloracergalan.portfolio.ui.viewmodel.InformacionGeneralViewModel
@@ -39,42 +38,40 @@ fun InformacionGeneralScreen(
     paddingValues: PaddingValues,
 ) {
     val viewModel: InformacionGeneralViewModel = viewModel<InformacionGeneralViewModel>()
-    val informacionGeneral by viewModel.getCurrentInformacionGeneralState.collectAsStateWithLifecycle()
+    val state by viewModel.informacionGeneralState.collectAsStateWithLifecycle()
 
     BoxWithBackgroundAnimatedImage(Modifier.fillMaxSize()) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-            verticalArrangement = Arrangement.Bottom,
-        ) {
-            when (informacionGeneral) {
-                is GetCurrentInformacionGeneralState.Loading -> {
-                    Text(text = "Loading")
-                }
-
-                is GetCurrentInformacionGeneralState.Success -> {
-                    val mInformacionGeneral =
-                        informacionGeneral as GetCurrentInformacionGeneralState.Success
-                    OnSuccessInformacionGeneral(mInformacionGeneral.data)
-                }
-
-                is GetCurrentInformacionGeneralState.Error -> {
-                    val m = informacionGeneral as GetCurrentInformacionGeneralState.Error
-                    Text(text = "Error ${m.error}")
-                }
-
-                GetCurrentInformacionGeneralState.NotData -> {
-                    Text(text = "Not Data")
+        // todo esto requiere refactor y simplificacion
+        if (state is InformacionGeneralState.Idle) {
+            (state as InformacionGeneralState.Idle).data.apply {
+                if (nombre.isNullOrBlank() || resumen.isNullOrBlank() || cargoActual.isNullOrBlank()) {
+                    Text("Not implemented or not data...") // todo
+                } else {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues),
+                        verticalArrangement = Arrangement.Bottom
+                    ) {
+                        OnSuccessInformacionGeneral(
+                            nombre = nombre,
+                            tag = cargoActual,
+                            resumen = resumen,
+                        )
+                    }
                 }
             }
+        } else {
+            Text("Not implemented or not data...") // todo
         }
     }
 }
 
 @Composable
 private fun OnSuccessInformacionGeneral(
-    informacionGeneral: InformacionGeneralUI
+    nombre: String,
+    tag: String,
+    resumen: String,
 ) {
     var isMostrarMas by remember { mutableStateOf(false) }
     val scrollState = rememberScrollState()
@@ -87,7 +84,7 @@ private fun OnSuccessInformacionGeneral(
         Text(
             modifier = Modifier.fillMaxWidth(),
             fontSize = 40.sp,
-            text = informacionGeneral.nombre.uppercase(),
+            text = nombre.uppercase(),
             color = MaterialTheme.colorScheme.primary,
             lineHeight = 48.sp,
             fontWeight = FontWeight.Bold
@@ -96,7 +93,7 @@ private fun OnSuccessInformacionGeneral(
         Text(
             modifier = Modifier.fillMaxWidth(),
             fontSize = 24.sp,
-            text = informacionGeneral.cargoActual,
+            text = tag,
             color = MaterialTheme.colorScheme.onBackground,
             lineHeight = 32.sp,
         )
@@ -111,7 +108,7 @@ private fun OnSuccessInformacionGeneral(
                 Modifier.fillMaxWidth()
             },
             fontSize = 14.sp,
-            text = informacionGeneral.resumen,
+            text = resumen,
             color = GrisTextos, // todo vincular al tema
             lineHeight = 18.sp,
             maxLines = if (isMostrarMas) Int.MAX_VALUE else 6,

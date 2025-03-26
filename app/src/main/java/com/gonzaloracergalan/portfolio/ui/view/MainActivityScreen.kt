@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,7 +26,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.toRect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -33,30 +33,36 @@ import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.gonzaloracergalan.portfolio.ui.model.ActiveResumeSectionUi
+import com.gonzaloracergalan.portfolio.ui.model.MainActivityModel
 import com.gonzaloracergalan.portfolio.ui.navigation.MainContainerNavigationRoutes
 import com.gonzaloracergalan.portfolio.ui.navigation.MainContainerNavigationWrapper
-import com.gonzaloracergalan.portfolio.ui.state.GetCurrentActiveSectionsState
+import com.gonzaloracergalan.portfolio.ui.state.MainActivityState
+import com.gonzaloracergalan.portfolio.ui.theme.PortfolioTheme
 import com.gonzaloracergalan.portfolio.ui.view.component.TransparentCircledTopBar
-import com.gonzaloracergalan.portfolio.ui.viewmodel.MainViewModel
+import com.gonzaloracergalan.portfolio.ui.viewmodel.MainActivityViewModel
 
 @Composable
 fun MainActivityScreen(paddingValues: PaddingValues) {
-    val mainActivityViewModel: MainViewModel = viewModel()
-    val activeSectionsState by mainActivityViewModel.activeSectionsState.collectAsStateWithLifecycle()
+    val mainActivityViewModel: MainActivityViewModel = viewModel()
+    val activeSectionsState by mainActivityViewModel.mainActivityState.collectAsStateWithLifecycle()
 
     // todo mejorar y tratar todos los casos... quizas mini navegacion no estaria mal
     // todo si no contengo basico no pinto nada de nada
     // todo quizas este state no requiera de tantos casos, solo loading si y no
-    if (activeSectionsState is GetCurrentActiveSectionsState.Success) {
-        val sections = (activeSectionsState as GetCurrentActiveSectionsState.Success).data
-        SuccessMainActivityScreen(paddingValues, sections)
+    if (activeSectionsState is MainActivityState.Idle) {
+        val sections = (activeSectionsState as MainActivityState.Idle).data.sections
+        if (sections.contains(MainActivityModel.Section.INFORMACION_GENERAL)) {
+            SuccessMainActivityScreen(paddingValues, sections)
+        } else {
+            NoDataMainActivityScreen()
+        }
     } else {
         NoDataMainActivityScreen()
     }
@@ -81,7 +87,7 @@ private fun NoDataMainActivityScreen() {
 @Composable
 private fun SuccessMainActivityScreen(
     paddingValues: PaddingValues,
-    sections: Set<ActiveResumeSectionUi>
+    sections: Set<MainActivityModel.Section>
 ) {
     val navHostController = rememberNavController()
 
@@ -119,11 +125,7 @@ private fun SuccessMainActivityScreen(
     ) {
         // Menu lateral
         HamburguerMenuOptions(
-            modifier = Modifier
-                .fillMaxSize()
-                .shadow(16.dp)
-                .background(MaterialTheme.colorScheme.primary)
-                .padding(paddingValues),
+            paddingValues = paddingValues,
             navController = navHostController,
             sections = sections,
             onOptionSelected = {
@@ -164,30 +166,36 @@ private fun SuccessMainActivityScreen(
  */
 @Composable
 private fun HamburguerMenuOptions(
-    modifier: Modifier,
+    paddingValues: PaddingValues,
     navController: NavHostController,
-    sections: Set<ActiveResumeSectionUi>,
+    sections: Set<MainActivityModel.Section>,
     onOptionSelected: () -> Unit
 ) {
-    Column(modifier) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(paddingValues)
+    ) {
         Text(
-            text = "Menú",
+            text = "Secciones",
             modifier = Modifier.padding(16.dp),
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = MaterialTheme.colorScheme.onBackground,
             fontSize = 20.sp
         )
+
+        HorizontalDivider(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
+        )
+
         Spacer(Modifier.height(8.dp))
 
         // todo hay que hacer mas bonito esto por dios
         // todo que no me deje navegar a la pantalla en la que estoy y tengo que controlar el popback
-
-        quizas hay que replantear estados a uno solo por pantalla y que se coma la logica
-                de los combine el viewModel..., terminar diseño del drawer y tener en cuenta popback,
-        cada vez que se recalculen los datos se navega a información general, importante tener en cuenta esto
-        recuerda que me he comido publicaciones del resume 4
         // basico (el único realmente obligatorio)
         // perfiles
-        if (sections.contains(ActiveResumeSectionUi.INFORMACION_GENERAL)) {
+        if (sections.contains(MainActivityModel.Section.INFORMACION_GENERAL)) {
             Button({
                 navController.navigate(MainContainerNavigationRoutes.InformacionGeneralRoute.route)
                 onOptionSelected()
@@ -197,7 +205,7 @@ private fun HamburguerMenuOptions(
         }
 
         // trabajo y voluntariado
-        if (sections.contains(ActiveResumeSectionUi.EXPERIENCIA)) {
+        if (sections.contains(MainActivityModel.Section.EXPERIENCIA)) {
             Button({
                 navController.navigate(MainContainerNavigationRoutes.ExperienciaRoute.route)
                 onOptionSelected()
@@ -207,7 +215,7 @@ private fun HamburguerMenuOptions(
         }
 
         // educacion
-        if (sections.contains(ActiveResumeSectionUi.ESTUDIOS)) {
+        if (sections.contains(MainActivityModel.Section.ESTUDIOS)) {
             Button({
                 navController.navigate(MainContainerNavigationRoutes.EstudiosRoute.route)
                 onOptionSelected()
@@ -217,7 +225,7 @@ private fun HamburguerMenuOptions(
         }
 
         // premios, certificados y referencias:
-        if (sections.contains(ActiveResumeSectionUi.PREMIOS_CERTIFICADOS)) {
+        if (sections.contains(MainActivityModel.Section.PREMIOS_CERTIFICADOS)) {
             Button({
                 navController.navigate(MainContainerNavigationRoutes.PremiosCertificadosRoute.route)
                 onOptionSelected()
@@ -227,7 +235,7 @@ private fun HamburguerMenuOptions(
         }
 
         // publicaciones
-        if (sections.contains(ActiveResumeSectionUi.PUBLICACIONES)) {
+        if (sections.contains(MainActivityModel.Section.PUBLICACIONES)) {
             Button({
                 navController.navigate(MainContainerNavigationRoutes.PublicacionesRoute.route)
                 onOptionSelected()
@@ -237,7 +245,7 @@ private fun HamburguerMenuOptions(
         }
 
         // proyectos (esta seccion llevará a github siempre)
-        if (sections.contains(ActiveResumeSectionUi.PROYECTOS)) {
+        if (sections.contains(MainActivityModel.Section.PROYECTOS)) {
             Button({
                 navController.navigate(MainContainerNavigationRoutes.ProyectosRoute.route)
                 onOptionSelected()
@@ -247,7 +255,7 @@ private fun HamburguerMenuOptions(
         }
 
         // habilidades, idiomas e intereses
-        if (sections.contains(ActiveResumeSectionUi.MAS_SOBRE_MI)) {
+        if (sections.contains(MainActivityModel.Section.MAS_SOBRE_MI)) {
             Button({
                 navController.navigate(MainContainerNavigationRoutes.MasSobreMiRoute.route)
                 onOptionSelected()
@@ -290,5 +298,27 @@ private fun MainContent(
             onPhoneNumerClicked = onPhoneNumerClicked,
             onEmailClicked = onEmailClicked
         )
+    }
+}
+
+@Composable
+@Preview
+private fun MainActivityScreenPreview() {
+    PortfolioTheme {
+        HamburguerMenuOptions(
+            paddingValues = PaddingValues(vertical = 16.dp),
+            navController = rememberNavController(),
+            sections = setOf(
+                MainActivityModel.Section.INFORMACION_GENERAL,
+                MainActivityModel.Section.EXPERIENCIA,
+                MainActivityModel.Section.ESTUDIOS,
+                MainActivityModel.Section.PREMIOS_CERTIFICADOS,
+                MainActivityModel.Section.PUBLICACIONES,
+                MainActivityModel.Section.PROYECTOS,
+                MainActivityModel.Section.MAS_SOBRE_MI
+            )
+        ) {
+
+        }
     }
 }

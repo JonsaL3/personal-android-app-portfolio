@@ -1,64 +1,48 @@
 package com.gonzaloracergalan.portfolio.data.repository
 
-import androidx.room.withTransaction
 import com.gonzaloracergalan.portfolio.data.db.dao.BasicoDAO
-import com.gonzaloracergalan.portfolio.data.db.dao.PerfilDAO
-import com.gonzaloracergalan.portfolio.data.db.entity.BasicoEntity
-import com.gonzaloracergalan.portfolio.data.dt.dto.BasicoDTO
-import com.gonzaloracergalan.portfolio.data.util.PortfolioRepository
-import com.gonzaloracergalan.portfolio.common.response.RepositoryResponse
+import com.gonzaloracergalan.portfolio.domain.model.Direccion
+import com.gonzaloracergalan.portfolio.domain.model.InformacionBasica
+import com.gonzaloracergalan.portfolio.domain.model.RedSocial
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.slf4j.LoggerFactory
 
-class BasicoRepository : PortfolioRepository() {
+class BasicoRepository : KoinComponent {
     companion object {
         private val logger = LoggerFactory.getLogger("BasicoRepository")
     }
 
     private val basicoDAO: BasicoDAO by inject()
-    private val perfilDAO: PerfilDAO by inject()
 
-    val currentBasicoWithPerfilesFlow: Flow<RepositoryResponse> = basicoDAO.getCurrentBasicoWithPerfilesFlow()
-        .toRepositoryFlow()
-
-    suspend fun save(entity: BasicoEntity) = runNonTransactionalRoomOperation {
-        logger.trace("save: {}", entity)
-        basicoDAO.insertBasico(entity)
-    }
-
-    suspend fun save(
-        id: Long = 0,
-        resumeOwnerId: Long,
-        dto: BasicoDTO
-    ): List<RepositoryResponse> {
-        logger.trace("save: id={}, resumeOwnerId={}, DTO={}", id, resumeOwnerId, dto)
-        val pairBasicoPerfiles = dto.toEntity(id, resumeOwnerId)
-        val basicoEntity = pairBasicoPerfiles.first
-        val perfilesEntities = pairBasicoPerfiles.second
-
-        // Nos guardamos las diferentes respuestas de la transacción
-        val responses = mutableListOf<RepositoryResponse>()
-
-        // No podemos usar nuestro metodo runNonTransactionalRoomOperation porque necesitamos
-        // el id del basico para insertar su lista de perfiles, por lo que lo hacemos
-        // aqui a mano
-        try {
-            portfolioRoomDatabase.withTransaction {
-                logger.info("save dto: basico={}", basicoEntity)
-                val basicoId = basicoDAO.insertBasico(basicoEntity)
-                responses.add(RepositoryResponse.Success(basicoId))
-                logger.info("save dto: perfiles={}", perfilesEntities)
-                val perfilIds = perfilDAO.insertPerfiles(perfilesEntities.map { it.copy(basicoId = basicoId) })
-                responses.add(RepositoryResponse.Success(perfilIds))
-            }
-        } catch (e: Exception) {
-            logger.error("save dto: error={}", e.message)
-            responses.clear()
-            responses.add(getRepositoryResponseFromException(e))
+    val currentBasicoWithPerfilesFlow: Flow<InformacionBasica> = basicoDAO
+        .getCurrentBasicoWithPerfilesFlow().map {
+            logger.trace("currentBasicoWithPerfilesFlow")
+            InformacionBasica(
+                correo = it.basico.correo,
+                cargoActual = it.basico.etiqueta,
+                imagen = it.basico.imagen,
+                resumen = it.basico.resumen,
+                nombre = it.basico.nombre,
+                telefono = it.basico.telefono,
+                direccion = it.basico.ubicacion?.let { direccion ->
+                    Direccion(
+                        ciudad = direccion.ciudad,
+                        codigoPais = direccion.codigoPais,
+                        region = direccion.region,
+                        codigoPostal = direccion.codigoPostal,
+                        direccion = direccion.direccion
+                    )
+                },
+                redesSociales = it.perfiles.map { perfil ->
+                    RedSocial(
+                        nombre = perfil.red,
+                        url = perfil.url,
+                        usuario = perfil.usuario
+                    )
+                }
+            )
         }
-
-        logger.trace("save dto: response={}", responses)
-        return responses
-    }
 }

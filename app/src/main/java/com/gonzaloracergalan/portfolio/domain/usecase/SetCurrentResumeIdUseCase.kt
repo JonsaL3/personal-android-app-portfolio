@@ -1,30 +1,25 @@
 package com.gonzaloracergalan.portfolio.domain.usecase
 
 import com.gonzaloracergalan.portfolio.data.repository.JsonResumeWrapperRepository
-import com.gonzaloracergalan.portfolio.domain.util.PortfolioUseCase
-import com.gonzaloracergalan.portfolio.common.response.UseCaseResponse
+import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.slf4j.LoggerFactory
 
-class SetCurrentResumeIdUseCase : PortfolioUseCase() {
+class SetCurrentResumeIdUseCase : KoinComponent {
     companion object {
         private val logger = LoggerFactory.getLogger("SetCurrentResumeIdUseCase")
     }
 
     private val jsonResumeWrapperRepository: JsonResumeWrapperRepository by inject()
 
-    // este mapper es un poco absurdo en este caso pero es lo que espera nuestra
-    // runSuspendRepositoryOperation generica...
-    private val longToLong: (
-        Long,
-    ) -> Long = { resumeId: Long ->
-        resumeId
-    }
-
-    suspend operator fun invoke(resumeId: Long): UseCaseResponse = runSuspendRepositoryOperation(
-        successMapper = longToLong
-    ) {
+    suspend operator fun invoke(resumeId: Long): Boolean {
         logger.trace("invoke")
-        jsonResumeWrapperRepository.setCurrentResumeId(resumeId)
+        return try {
+            jsonResumeWrapperRepository.setCurrentResumeId(resumeId)
+            true
+        } catch (e: Exception) {
+            logger.error("invoke Error setting current resume id", e)
+            false
+        }
     }
 }

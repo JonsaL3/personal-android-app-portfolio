@@ -1,6 +1,6 @@
 package com.gonzaloracergalan.portfolio.ui.viewmodel
 
-import com.gonzaloracergalan.portfolio.ui.util.PortfolioViewModel
+import androidx.lifecycle.ViewModel
 
-class EstudiosViewModel : PortfolioViewModel() {
+class EstudiosViewModel : ViewModel() {
 }

@@ -53,7 +53,7 @@ interface JsonResumeWrapperDAO {
                 CASE WHEN COUNT(DISTINCT re.id) > 0 THEN 'REFERENCIA,' ELSE '' END ||
                 CASE WHEN COUNT(DISTINCT t.id) > 0 THEN 'TRABAJO,' ELSE '' END ||
                 CASE WHEN COUNT(DISTINCT v.id) > 0 THEN 'VOLUNTARIADO,' ELSE '' END
-            , ',') AS activeResumeSections
+            , ',') AS sections
         FROM resumes r
             LEFT JOIN basico b        ON b.id = r.resumeId
             LEFT JOIN certificado c   ON c.resumeOwnerId = r.resumeId

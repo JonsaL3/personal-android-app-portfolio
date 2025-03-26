@@ -167,7 +167,6 @@ class MainActivity : ComponentActivity(), KoinComponent {
         logger.info("onCreate")
         // todo borrar example
         example
-        // todo mainViewModel.setCurrentResumeId(4L)
         // todo borrar example
         enableEdgeToEdge()
         setContent {

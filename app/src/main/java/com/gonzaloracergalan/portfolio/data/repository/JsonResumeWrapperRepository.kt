@@ -1,6 +1,8 @@
 package com.gonzaloracergalan.portfolio.data.repository
 
 import androidx.room.withTransaction
+import com.gonzaloracergalan.portfolio.data.db.PortfolioRoomDatabase
+import com.gonzaloracergalan.portfolio.data.db.calculated.ActiveResumeSectionsCalculated
 import com.gonzaloracergalan.portfolio.data.db.dao.BasicoDAO
 import com.gonzaloracergalan.portfolio.data.db.dao.CertificacionDAO
 import com.gonzaloracergalan.portfolio.data.db.dao.EducacionDAO
@@ -15,19 +17,21 @@ import com.gonzaloracergalan.portfolio.data.db.dao.PublicacionDAO
 import com.gonzaloracergalan.portfolio.data.db.dao.ReferenciaDAO
 import com.gonzaloracergalan.portfolio.data.db.dao.TrabajoDAO
 import com.gonzaloracergalan.portfolio.data.db.dao.VoluntariadoDAO
-import com.gonzaloracergalan.portfolio.data.db.entity.JsonResumeWrapperEntity
 import com.gonzaloracergalan.portfolio.data.dt.dto.JsonResumeWrapperDTO
-import com.gonzaloracergalan.portfolio.data.util.PortfolioRepository
-import com.gonzaloracergalan.portfolio.common.response.RepositoryResponse
+import com.gonzaloracergalan.portfolio.domain.model.Section
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.slf4j.LoggerFactory
 
-class JsonResumeWrapperRepository : PortfolioRepository() {
+class JsonResumeWrapperRepository : KoinComponent {
     companion object {
         private val logger = LoggerFactory.getLogger("JsonResumeWrapperRepository")
     }
 
-    // Trabajar con esta entidad lleva varios daos de la mano
+    private val db: PortfolioRoomDatabase by inject()
+
     private val jsonResumeWrapperDAO: JsonResumeWrapperDAO by inject()
     private val basicoDAO: BasicoDAO by inject()
     private val certificacionDAO: CertificacionDAO by inject()
@@ -43,56 +47,55 @@ class JsonResumeWrapperRepository : PortfolioRepository() {
     private val trabajoDAO: TrabajoDAO by inject()
     private val voluntariadoDAO: VoluntariadoDAO by inject()
 
-    val currentActiveResumeSectionsFlow = jsonResumeWrapperDAO.getCurrentActiveResumeSections()
-        .toRepositoryFlow()
+    val currentSectionsFlow: Flow<Set<Section>> = jsonResumeWrapperDAO
+        .getCurrentActiveResumeSections().map {
+            it.sections.map { section ->
+                // No hago valueOf para mantener desacoplamiento
+                when (section) {
+                    ActiveResumeSectionsCalculated.Section.BASICO -> Section.BASICO
+                    ActiveResumeSectionsCalculated.Section.CERTIFICADOS -> Section.CERTIFICADOS
+                    ActiveResumeSectionsCalculated.Section.EDUCACION -> Section.EDUCACION
+                    ActiveResumeSectionsCalculated.Section.HABILIDAD -> Section.HABILIDAD
+                    ActiveResumeSectionsCalculated.Section.IDIOMA -> Section.IDIOMA
+                    ActiveResumeSectionsCalculated.Section.INTERES -> Section.INTERES
+                    ActiveResumeSectionsCalculated.Section.PREMIO -> Section.PREMIO
+                    ActiveResumeSectionsCalculated.Section.PROYECTO -> Section.PROYECTO
+                    ActiveResumeSectionsCalculated.Section.PUBLICACION -> Section.PUBLICACION
+                    ActiveResumeSectionsCalculated.Section.REFERENCIA -> Section.REFERENCIA
+                    ActiveResumeSectionsCalculated.Section.TRABAJO -> Section.TRABAJO
+                    ActiveResumeSectionsCalculated.Section.VOLUNTARIADO -> Section.VOLUNTARIADO
+                }
+            }.toSet()
+        }
 
-    suspend fun setCurrentResumeId(resumeId: Long): RepositoryResponse {
+    suspend fun setCurrentResumeId(resumeId: Long): Boolean {
         logger.trace("setCurrentResumeId: resumeId={}", resumeId)
-        val operations = mutableListOf<suspend () -> Int>()
-        // necesito que se seteen correctamente todas a false si o si antes de setear como actual
-        // un nuevo resume
-        operations.add {
-            logger.info("setCurrentResumeId: Setting all current resumes to false")
-            jsonResumeWrapperDAO.setAllCurrentToFalse()
-        }
-        operations.add {
-            logger.info("setCurrentResumeId: Setting current resume ($resumeId) to true")
-            jsonResumeWrapperDAO.setCurrentResume(resumeId)
-        }
 
-        // ejecutamos la transaccion y mapeamos a una unica repo response, en este caso a las
-        // capas externas les da igual la lista de responses, solo interesa la operación
-        // en su conjunto.
-        val transactionsResponses = runTransactionalRoomOperation(operations)
-        val response = if (transactionsResponses.all { it is RepositoryResponse.Success<*> }) {
-            logger.info("setCurrentResumeId: All operations were successful")
-            RepositoryResponse.Success(resumeId)
-        } else {
-            logger.warn("setCurrentResumeId: Some operations failed")
-            RepositoryResponse.Error(RepositoryResponse.RepositoryErrorType.ROOM_FAILED_TRANSACTION)
-        }
-
-        logger.info("setCurrentResumeId: response={}", response)
-        return response
-    }
-
-    suspend fun save(entity: JsonResumeWrapperEntity): RepositoryResponse =
-        runNonTransactionalRoomOperation {
-            logger.trace("save: {}", entity)
-            if (jsonResumeWrapperDAO.isCurrentSetted()) {
-                logger.warn("save: There is already a current resume id setted to true, cannot save another one.")
-                RepositoryResponse.Error(RepositoryResponse.RepositoryErrorType.ROOM_RESTRICTION)
-            } else {
-                logger.info("save: Inserting new resume")
-                jsonResumeWrapperDAO.insertResume(entity)
+        val success = try {
+            db.withTransaction {
+                logger.info("setCurrentResumeId: Setting all current resumes to false")
+                jsonResumeWrapperDAO.setAllCurrentToFalse()
+                logger.info("setCurrentResumeId: Setting current resume ($resumeId) to true")
+                jsonResumeWrapperDAO.setCurrentResume(resumeId) > 0
             }
+        } catch (e: Exception) {
+            logger.error("setCurrentResumeId: Error setting current resumeId={}", resumeId)
+            false
         }
+
+        logger.info("setCurrentResumeId: response={}", success)
+        return success
+    }
 
     suspend fun save(
         resumeId: Long = 0,
         dto: JsonResumeWrapperDTO
-    ): List<RepositoryResponse> {
+    ): Int? {
         logger.trace("save: resumeId={}, DTO={}", resumeId, dto)
+
+        // val id de la entidad que se inserta, sera la que devolvamos
+        var idResponse: Int? = null
+
         // Primero convertimos a entity todos los elementos del dto
         val pairBasicoPerfiles = dto.basico?.toEntity(0, resumeId)
         val basicoEntity = pairBasicoPerfiles?.first
@@ -111,14 +114,11 @@ class JsonResumeWrapperRepository : PortfolioRepository() {
         // ahora convertimos a entity el jsonResumeWrapperDTO
         val jsonResumeWrapperEntity = dto.toEntity(resumeId)
 
-        // Nos guardamos las diferentes respuestas de la transacción
-        val responses = mutableListOf<RepositoryResponse>()
-
         // procedemos con la inserccion de los elementos, en este caso no podremos usar
         // runTransactionalRoomOperation, deberemos hacerlo a mano, porque necesitamos guardarnos
         // el id del jsonResumeWrapperEntity para poder relacionar los elementos con él.
         try {
-            portfolioRoomDatabase.withTransaction {
+            idResponse = db.withTransaction {
                 // insertamos el id del jsonresume
                 val jsonResumeId = jsonResumeWrapperDAO.insertResume(jsonResumeWrapperEntity)
 
@@ -127,13 +127,11 @@ class JsonResumeWrapperRepository : PortfolioRepository() {
                     logger.info("save: BasicoEntity={}", basico)
                     val mBasicoEntity = basico.copy(resumeOwnerId = jsonResumeId)
                     val basicoId = basicoDAO.insertBasico(mBasicoEntity)
-                    responses.add(RepositoryResponse.Success(basicoId))
                     perfilesEntities?.map { perfil ->
                         perfil.copy(id = jsonResumeId, basicoId = basicoId)
                     }?.let {
                         logger.info("save: PerfilesEntities={}", it)
-                        val perfilIds = perfilDAO.insertPerfiles(it)
-                        responses.add(RepositoryResponse.Success(perfilIds))
+                        perfilDAO.insertPerfiles(it)
                     } ?: run {
                         logger.warn("save: PerfilesEntities is null")
                     }
@@ -146,8 +144,7 @@ class JsonResumeWrapperRepository : PortfolioRepository() {
                     certificacion.copy(resumeOwnerId = jsonResumeId)
                 }?.let { certificaciones ->
                     logger.info("save: CertificacionesEntities={}", certificaciones)
-                    val certificadoIds = certificacionDAO.insertCertificados(certificaciones)
-                    responses.add(RepositoryResponse.Success(certificadoIds))
+                    certificacionDAO.insertCertificados(certificaciones)
                 } ?: run {
                     logger.warn("save: CertificacionesEntities is null")
                 }
@@ -157,8 +154,7 @@ class JsonResumeWrapperRepository : PortfolioRepository() {
                     educacion.copy(resumeOwnerId = jsonResumeId)
                 }?.let { educaciones ->
                     logger.info("save: EducacionesEntities={}", educaciones)
-                    val educacionIds = educacionDAO.insertEducaciones(educaciones)
-                    responses.add(RepositoryResponse.Success(educacionIds))
+                    educacionDAO.insertEducaciones(educaciones)
                 } ?: run {
                     logger.warn("save: EducacionEntity is null")
                 }
@@ -168,8 +164,7 @@ class JsonResumeWrapperRepository : PortfolioRepository() {
                     habilidad.copy(resumeOwnerId = jsonResumeId)
                 }?.let { habilidades ->
                     logger.info("save: HabilidadesEntities={}", habilidades)
-                    val habilidadIds = habilidadDAO.insertHabilidades(habilidades)
-                    responses.add(RepositoryResponse.Success(habilidadIds))
+                    habilidadDAO.insertHabilidades(habilidades)
                 } ?: run {
                     logger.warn("save: HabilidadEntity is null")
                 }
@@ -179,8 +174,7 @@ class JsonResumeWrapperRepository : PortfolioRepository() {
                     idioma.copy(resumeOwnerId = jsonResumeId)
                 }?.let { idiomas ->
                     logger.info("save: IdiomasEntities={}", idiomas)
-                    val idiomaIds = idiomaDAO.insertIdiomas(idiomas)
-                    responses.add(RepositoryResponse.Success(idiomaIds))
+                    idiomaDAO.insertIdiomas(idiomas)
                 } ?: run {
                     logger.warn("save: IdiomaEntity is null")
                 }
@@ -190,8 +184,7 @@ class JsonResumeWrapperRepository : PortfolioRepository() {
                     interes.copy(resumeOwnerId = jsonResumeId)
                 }?.let { intereses ->
                     logger.info("save: InteresesEntities={}", intereses)
-                    val interesIds = interesDAO.insertIntereses(intereses)
-                    responses.add(RepositoryResponse.Success(interesIds))
+                    interesDAO.insertIntereses(intereses)
                 } ?: run {
                     logger.warn("save: InteresEntity is null")
                 }
@@ -201,8 +194,7 @@ class JsonResumeWrapperRepository : PortfolioRepository() {
                     premio.copy(resumeOwnerId = jsonResumeId)
                 }?.let { premios ->
                     logger.info("save: PremiosEntities={}", premios)
-                    val premioIds = premioDAO.insertPremios(premios)
-                    responses.add(RepositoryResponse.Success(premioIds))
+                    premioDAO.insertPremios(premios)
                 } ?: run {
                     logger.warn("save: PremioEntity is null")
                 }
@@ -212,8 +204,7 @@ class JsonResumeWrapperRepository : PortfolioRepository() {
                     proyecto.copy(resumeOwnerId = jsonResumeId)
                 }?.let { proyectos ->
                     logger.info("save: ProyectosEntities={}", proyectos)
-                    val proyectoIds = proyectoDAO.insertProyectos(proyectos)
-                    responses.add(RepositoryResponse.Success(proyectoIds))
+                    proyectoDAO.insertProyectos(proyectos)
                 } ?: run {
                     logger.warn("save: ProyectoEntity is null")
                 }
@@ -223,8 +214,7 @@ class JsonResumeWrapperRepository : PortfolioRepository() {
                     publicacion.copy(resumeOwnerId = jsonResumeId)
                 }?.let { publicaciones ->
                     logger.info("save: PublicacionesEntities={}", publicaciones)
-                    val publicacionIds = publicacionDAO.insertPublicaciones(publicaciones)
-                    responses.add(RepositoryResponse.Success(publicacionIds))
+                    publicacionDAO.insertPublicaciones(publicaciones)
                 } ?: run {
                     logger.warn("save: PublicacionEntity is null")
                 }
@@ -234,8 +224,7 @@ class JsonResumeWrapperRepository : PortfolioRepository() {
                     referencia.copy(resumeOwnerId = jsonResumeId)
                 }?.let { referencias ->
                     logger.info("save: ReferenciasEntities={}", referencias)
-                    val referenciaIds = referenciaDAO.insertReferencias(referencias)
-                    responses.add(RepositoryResponse.Success(referenciaIds))
+                    referenciaDAO.insertReferencias(referencias)
                 } ?: run {
                     logger.warn("save: ReferenciaEntity is null")
                 }
@@ -245,8 +234,7 @@ class JsonResumeWrapperRepository : PortfolioRepository() {
                     trabajo.copy(resumeOwnerId = jsonResumeId)
                 }?.let { trabajos ->
                     logger.info("save: TrabajosEntities={}", trabajos)
-                    val trabajoIds = trabajoDAO.insertTrabajos(trabajos)
-                    responses.add(RepositoryResponse.Success(trabajoIds))
+                    trabajoDAO.insertTrabajos(trabajos)
                 } ?: run {
                     logger.warn("save: TrabajoEntity is null")
                 }
@@ -256,20 +244,18 @@ class JsonResumeWrapperRepository : PortfolioRepository() {
                     voluntariado.copy(resumeOwnerId = jsonResumeId)
                 }?.let { voluntariados ->
                     logger.info("save: VoluntariadosEntities={}", voluntariados)
-                    val voluntariadoIds = voluntariadoDAO.insertVoluntariados(voluntariados)
-                    responses.add(RepositoryResponse.Success(voluntariadoIds))
+                    voluntariadoDAO.insertVoluntariados(voluntariados)
                 } ?: run {
                     logger.warn("save: VoluntariadoEntity is null")
                 }
+                idResponse
             }
         } catch (e: Exception) {
             logger.error("save: Error saving jsonResumeWrapperEntity {}", e.message)
-            responses.clear()
-            responses.add(getRepositoryResponseFromException(e))
         }
 
         // Retornamos la respuesta.
-        logger.info("save: Transaction finished with responses={}", responses)
-        return responses
+        logger.info("save: Transaction responseInsertedResumeId={}", idResponse)
+        return idResponse
     }
 }
