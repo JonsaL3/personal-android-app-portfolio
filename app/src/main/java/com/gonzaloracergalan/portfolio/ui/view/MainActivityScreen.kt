@@ -2,15 +2,21 @@ package com.gonzaloracergalan.portfolio.ui.view
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -24,15 +30,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.toRect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -40,10 +50,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.gonzaloracergalan.portfolio.R
 import com.gonzaloracergalan.portfolio.ui.model.MainActivityModel
 import com.gonzaloracergalan.portfolio.ui.navigation.MainContainerNavigationRoutes
 import com.gonzaloracergalan.portfolio.ui.navigation.MainContainerNavigationWrapper
 import com.gonzaloracergalan.portfolio.ui.state.MainActivityState
+import com.gonzaloracergalan.portfolio.ui.theme.GrisTextos
 import com.gonzaloracergalan.portfolio.ui.theme.PortfolioTheme
 import com.gonzaloracergalan.portfolio.ui.view.component.TransparentCircledTopBar
 import com.gonzaloracergalan.portfolio.ui.viewmodel.MainActivityViewModel
@@ -177,12 +189,31 @@ private fun HamburguerMenuOptions(
             .background(MaterialTheme.colorScheme.background)
             .padding(paddingValues)
     ) {
-        Text(
-            text = "Secciones",
-            modifier = Modifier.padding(16.dp),
-            color = MaterialTheme.colorScheme.onBackground,
-            fontSize = 20.sp
-        )
+        Row(
+            modifier = Modifier.padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                modifier = Modifier.size(80.dp).clip(RoundedCornerShape(CornerSize(512.dp))),
+                painter = painterResource(R.drawable.img_background_example), // todo imagen dinamica
+                contentDescription = "background",
+                contentScale = ContentScale.Crop,
+                alignment = Alignment.CenterStart,
+            )
+            Spacer(Modifier.width(16.dp))
+            Column {
+                Text(
+                    text = "Secciones",
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontSize = 20.sp
+                )
+                Text(
+                    text = "Navega a lo largo de todo el CV del candidato",
+                    color = GrisTextos, // todo color de texto al tema
+                    fontSize = 14.sp
+                )
+            } seguir avanzando con el drawer que es mas feo que feini
+        }
 
         HorizontalDivider(
             modifier = Modifier.padding(horizontal = 16.dp),
@@ -306,7 +337,7 @@ private fun MainContent(
 private fun MainActivityScreenPreview() {
     PortfolioTheme {
         HamburguerMenuOptions(
-            paddingValues = PaddingValues(vertical = 16.dp),
+            paddingValues = PaddingValues(vertical = 16.dp, horizontal = 8.dp),
             navController = rememberNavController(),
             sections = setOf(
                 MainActivityModel.Section.INFORMACION_GENERAL,

@@ -23,7 +23,7 @@ fun BoxWithBackgroundAnimatedImage(
     ) {
         Image(
             modifier = Modifier.fillMaxSize(),
-            painter = painterResource(R.drawable.img_background_example),
+            painter = painterResource(R.drawable.img_background_example), // todo imagen dinamica
             contentDescription = "background",
             contentScale = ContentScale.Crop,
             alignment = Alignment.CenterStart
