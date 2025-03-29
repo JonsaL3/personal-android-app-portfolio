@@ -1,5 +1,7 @@
 package com.gonzaloracergalan.portfolio.ui.navigation
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -17,12 +19,14 @@ import com.gonzaloracergalan.portfolio.ui.view.InformacionGeneralScreen
 @Composable
 fun MainContainerNavigationWrapper(
     navController: NavHostController,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
 ) {
     NavHost(
         modifier = Modifier.fillMaxSize(),
         navController = navController,
         startDestination = MainContainerNavigationRoutes.InformacionGeneralRoute.route,
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None },
     ) {
         composable(MainContainerNavigationRoutes.InformacionGeneralRoute.route) {
             InformacionGeneralScreen(paddingValues)

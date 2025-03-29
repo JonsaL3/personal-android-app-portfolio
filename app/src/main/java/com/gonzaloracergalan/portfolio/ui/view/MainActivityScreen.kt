@@ -2,23 +2,20 @@ package com.gonzaloracergalan.portfolio.ui.view
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,33 +27,25 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.toRect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.gonzaloracergalan.portfolio.R
 import com.gonzaloracergalan.portfolio.ui.model.MainActivityModel
-import com.gonzaloracergalan.portfolio.ui.navigation.MainContainerNavigationRoutes
 import com.gonzaloracergalan.portfolio.ui.navigation.MainContainerNavigationWrapper
 import com.gonzaloracergalan.portfolio.ui.state.MainActivityState
-import com.gonzaloracergalan.portfolio.ui.theme.GrisTextos
-import com.gonzaloracergalan.portfolio.ui.theme.PortfolioTheme
 import com.gonzaloracergalan.portfolio.ui.view.component.TransparentCircledTopBar
 import com.gonzaloracergalan.portfolio.ui.viewmodel.MainActivityViewModel
 
@@ -106,7 +95,7 @@ private fun SuccessMainActivityScreen(
     // apertura del drawer
     var isDrawerOpen by remember { mutableStateOf(false) }
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
-    val drawerWidth = screenWidth * 0.8f
+    val drawerWidth = screenWidth * 0.3f
     val offsetX by animateDpAsState(
         targetValue = if (isDrawerOpen) drawerWidth else 0.dp,
         animationSpec = tween(durationMillis = 500)
@@ -126,23 +115,15 @@ private fun SuccessMainActivityScreen(
     val maxBlur = 4.dp
     val blurRadius = (maxBlur * fraction)
 
-    // scale ligado al menu hamburguesa
-    val scale = 1f
-
     // Contenedor principal menu hamburguesa + vista principal con su navegación
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.TopCenter
-    ) {
+    Box(Modifier.fillMaxSize()) {
         // Menu lateral
         HamburguerMenuOptions(
+            modifier = Modifier.width(drawerWidth),
+            navHostController = navHostController,
             paddingValues = paddingValues,
-            navController = navHostController,
             sections = sections,
-            onOptionSelected = {
-                isDrawerOpen = false
-            }
+            onOptionSelected = { isDrawerOpen = false }
         )
         // Vista principal
         MainContent(
@@ -162,8 +143,7 @@ private fun SuccessMainActivityScreen(
                             canvas.restore()
                         }
                     }
-                }
-                .scale(scale = scale),
+                },
             paddingValues = paddingValues,
             navHostController = navHostController,
             onHambuguerClicked = { isDrawerOpen = !isDrawerOpen },
@@ -178,122 +158,80 @@ private fun SuccessMainActivityScreen(
  */
 @Composable
 private fun HamburguerMenuOptions(
+    modifier: Modifier = Modifier,
+    navHostController: NavHostController,
     paddingValues: PaddingValues,
-    navController: NavHostController,
     sections: Set<MainActivityModel.Section>,
     onOptionSelected: () -> Unit
 ) {
+    val navBackStackEntry by navHostController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(paddingValues)
+        modifier = modifier
+            .fillMaxHeight()
+            .background(MaterialTheme.colorScheme.primary)
+            .padding(paddingValues),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Row(
-            modifier = Modifier.padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Image(
-                modifier = Modifier.size(80.dp).clip(RoundedCornerShape(CornerSize(512.dp))),
-                painter = painterResource(R.drawable.img_background_example), // todo imagen dinamica
-                contentDescription = "background",
-                contentScale = ContentScale.Crop,
-                alignment = Alignment.CenterStart,
+        sections.forEach { item ->
+            HamburguerMenuSection(
+                modifier = modifier.weight(1f),
+                section = item,
+                isSelected = currentRoute == item.route,
+                onClick = {
+                    navHostController.navigate(item.route) {
+                        navHostController.graph.startDestinationRoute?.let { route ->
+                            popUpTo(route) {
+                                saveState = true
+                            }
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                    if (currentRoute != item.route) {
+                        onOptionSelected()
+                    }
+                }
             )
-            Spacer(Modifier.width(16.dp))
-            Column {
-                Text(
-                    text = "Secciones",
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontSize = 20.sp
-                )
-                Text(
-                    text = "Navega a lo largo de todo el CV del candidato",
-                    color = GrisTextos, // todo color de texto al tema
-                    fontSize = 14.sp
-                )
-            } seguir avanzando con el drawer que es mas feo que feini
         }
+    }
+}
 
-        HorizontalDivider(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
+@Composable
+private fun HamburguerMenuSection(
+    modifier: Modifier,
+    section: MainActivityModel.Section,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    Column(
+        modifier = modifier.clickable(onClick = onClick).background(
+            if (isSelected)
+                MaterialTheme.colorScheme.onBackground
+            else
+                MaterialTheme.colorScheme.primary
+        ),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            imageVector = if (isSelected) section.selectedIcon else section.unselectedIcon,
+            contentDescription = stringResource(section.text),
+            tint = if (isSelected)
+                MaterialTheme.colorScheme.primary
+            else
+                MaterialTheme.colorScheme.onBackground
         )
-
         Spacer(Modifier.height(8.dp))
-
-        // todo hay que hacer mas bonito esto por dios
-        // todo que no me deje navegar a la pantalla en la que estoy y tengo que controlar el popback
-        // basico (el único realmente obligatorio)
-        // perfiles
-        if (sections.contains(MainActivityModel.Section.INFORMACION_GENERAL)) {
-            Button({
-                navController.navigate(MainContainerNavigationRoutes.InformacionGeneralRoute.route)
-                onOptionSelected()
-            }) {
-                Text("Información general")
-            }
-        }
-
-        // trabajo y voluntariado
-        if (sections.contains(MainActivityModel.Section.EXPERIENCIA)) {
-            Button({
-                navController.navigate(MainContainerNavigationRoutes.ExperienciaRoute.route)
-                onOptionSelected()
-            }) {
-                Text("Experiencia")
-            }
-        }
-
-        // educacion
-        if (sections.contains(MainActivityModel.Section.ESTUDIOS)) {
-            Button({
-                navController.navigate(MainContainerNavigationRoutes.EstudiosRoute.route)
-                onOptionSelected()
-            }) {
-                Text("Estudios")
-            }
-        }
-
-        // premios, certificados y referencias:
-        if (sections.contains(MainActivityModel.Section.PREMIOS_CERTIFICADOS)) {
-            Button({
-                navController.navigate(MainContainerNavigationRoutes.PremiosCertificadosRoute.route)
-                onOptionSelected()
-            }) {
-                Text("Premios y certificados")
-            }
-        }
-
-        // publicaciones
-        if (sections.contains(MainActivityModel.Section.PUBLICACIONES)) {
-            Button({
-                navController.navigate(MainContainerNavigationRoutes.PublicacionesRoute.route)
-                onOptionSelected()
-            }) {
-                Text("Publicaciones")
-            }
-        }
-
-        // proyectos (esta seccion llevará a github siempre)
-        if (sections.contains(MainActivityModel.Section.PROYECTOS)) {
-            Button({
-                navController.navigate(MainContainerNavigationRoutes.ProyectosRoute.route)
-                onOptionSelected()
-            }) {
-                Text("Proyectos")
-            }
-        }
-
-        // habilidades, idiomas e intereses
-        if (sections.contains(MainActivityModel.Section.MAS_SOBRE_MI)) {
-            Button({
-                navController.navigate(MainContainerNavigationRoutes.MasSobreMiRoute.route)
-                onOptionSelected()
-            }) {
-                Text("Más sobre mi")
-            }
-        }
+        Text(
+            text = stringResource(section.text),
+            color = if (isSelected)
+                MaterialTheme.colorScheme.primary
+            else
+                MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier,
+            textAlign = TextAlign.Center,
+        )
     }
 }
 
@@ -329,27 +267,5 @@ private fun MainContent(
             onPhoneNumerClicked = onPhoneNumerClicked,
             onEmailClicked = onEmailClicked
         )
-    }
-}
-
-@Composable
-@Preview
-private fun MainActivityScreenPreview() {
-    PortfolioTheme {
-        HamburguerMenuOptions(
-            paddingValues = PaddingValues(vertical = 16.dp, horizontal = 8.dp),
-            navController = rememberNavController(),
-            sections = setOf(
-                MainActivityModel.Section.INFORMACION_GENERAL,
-                MainActivityModel.Section.EXPERIENCIA,
-                MainActivityModel.Section.ESTUDIOS,
-                MainActivityModel.Section.PREMIOS_CERTIFICADOS,
-                MainActivityModel.Section.PUBLICACIONES,
-                MainActivityModel.Section.PROYECTOS,
-                MainActivityModel.Section.MAS_SOBRE_MI
-            )
-        ) {
-
-        }
     }
 }

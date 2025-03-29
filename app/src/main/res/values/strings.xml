@@ -1,5 +1,12 @@
 <resources>
     <string name="app_name">portfolio</string>
+    <string name="mainactivity_hamburguerinfogeneral">Info.</string>
+    <string name="mainactivity_hamburguerpremio">Premios</string>
+    <string name="mainactivity_hamburguerestudios">Estud.</string>
+    <string name="mainactivity_hamburguerproyectos">Proy.</string>
+    <string name="mainactivity_hamburguerpublicaciones">Pub.</string>
+    <string name="mainactivity_hamburguerexperiencia">Exp.</string>
+    <string name="mainactivity_hamburguermas">Mas</string>
     <string name="informaciongeneralscreen_mostrarmas">Mostrar más</string>
     <string name="informaciongeneralscreen_mostrarmenos">Mostrar menos</string>
 </resources>
