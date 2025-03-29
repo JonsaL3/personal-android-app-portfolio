@@ -18,7 +18,7 @@ import androidx.compose.material.icons.outlined.School
 import androidx.compose.material.icons.outlined.Work
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.gonzaloracergalan.portfolio.R
-import com.gonzaloracergalan.portfolio.ui.navigation.MainContainerNavigationRoutes
+import com.gonzaloracergalan.portfolio.ui.view.navigation.MainContainerNavigationRoutes
 
 data class MainActivityModel(
     val sections : Set<Section>

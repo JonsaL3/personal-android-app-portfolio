@@ -1,4 +1,4 @@
-package com.gonzaloracergalan.portfolio.ui.view
+package com.gonzaloracergalan.portfolio.ui.view.screen
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -44,7 +44,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.gonzaloracergalan.portfolio.ui.model.MainActivityModel
-import com.gonzaloracergalan.portfolio.ui.navigation.MainContainerNavigationWrapper
+import com.gonzaloracergalan.portfolio.ui.view.navigation.MainContainerNavigationWrapper
 import com.gonzaloracergalan.portfolio.ui.state.MainActivityState
 import com.gonzaloracergalan.portfolio.ui.view.component.TransparentCircledTopBar
 import com.gonzaloracergalan.portfolio.ui.viewmodel.MainActivityViewModel

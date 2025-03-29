@@ -1,4 +1,4 @@
-package com.gonzaloracergalan.portfolio.ui.view
+package com.gonzaloracergalan.portfolio.ui.view.screen
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement

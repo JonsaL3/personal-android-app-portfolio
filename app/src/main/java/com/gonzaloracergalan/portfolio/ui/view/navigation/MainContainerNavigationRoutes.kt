@@ -1,4 +1,4 @@
-package com.gonzaloracergalan.portfolio.ui.navigation
+package com.gonzaloracergalan.portfolio.ui.view.navigation
 
 sealed class MainContainerNavigationRoutes(val route: String) {
     // basico (el único realmente obligatorio)
