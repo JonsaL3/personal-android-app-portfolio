@@ -24,8 +24,8 @@ data class VoluntariadoEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     val resumeOwnerId: Long,
-    val fechaFin: String?,
-    val fechaInicio: String?,
+    val fechaFinMillis: Long?,
+    val fechaInicioMillis: Long?,
     val logros: List<String>?, // Se requiere el converter
     val organizacion: String?,
     val posicion: String?,
@@ -34,8 +34,8 @@ data class VoluntariadoEntity(
 ) {
     fun toDTO(): VoluntariadoDTO {
         return VoluntariadoDTO(
-            fechaFin = fechaFin,
-            fechaInicio = fechaInicio,
+            fechaFinMillis = fechaFinMillis,
+            fechaInicioMillis = fechaInicioMillis,
             logros = logros,
             organizacion = organizacion,
             posicion = posicion,

@@ -1,9 +1,10 @@
 package com.gonzaloracergalan.portfolio.domain.di
 
-import com.gonzaloracergalan.portfolio.domain.usecase.GetCurrentInformacionBasicaUseCase
-import com.gonzaloracergalan.portfolio.domain.usecase.SetCurrentResumeIdUseCase
 import com.gonzaloracergalan.portfolio.common.PortfolioKoinModule
 import com.gonzaloracergalan.portfolio.domain.usecase.GetCurrentActiveSectionsUseCase
+import com.gonzaloracergalan.portfolio.domain.usecase.GetCurrentExperienciaUseCase
+import com.gonzaloracergalan.portfolio.domain.usecase.GetCurrentInformacionBasicaUseCase
+import com.gonzaloracergalan.portfolio.domain.usecase.SetCurrentResumeIdUseCase
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -14,5 +15,6 @@ object DomainModule : PortfolioKoinModule {
             single { GetCurrentInformacionBasicaUseCase() }
             single { SetCurrentResumeIdUseCase() }
             single { GetCurrentActiveSectionsUseCase() }
+            single { GetCurrentExperienciaUseCase() }
         }
 }

@@ -8,9 +8,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class TrabajoDTO(
     @SerialName("fechaFin")
-    val fechaFin: String? = null,
+    val fechaFinMillis: Long? = null,
     @SerialName("fechaInicio")
-    val fechaInicio: String? = null,
+    val fechaInicioMillis: Long? = null,
     @SerialName("logros")
     val logros: List<String>? = null,
     @SerialName("nombre")
@@ -26,8 +26,8 @@ data class TrabajoDTO(
         return TrabajoEntity(
             id = id,
             resumeOwnerId = resumeOwnerId,
-            fechaFin = fechaFin,
-            fechaInicio = fechaInicio,
+            fechaFinMillis = fechaFinMillis,
+            fechaInicioMillis = fechaInicioMillis,
             logros = logros,
             nombre = nombre,
             posicion = posicion,

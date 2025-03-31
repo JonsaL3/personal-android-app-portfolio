@@ -1,15 +1,14 @@
 package com.gonzaloracergalan.portfolio.ui.model
 
-import kotlinx.serialization.SerialName
-import java.time.LocalDate
+import java.util.Date
 
 data class ExperienciaModel(
     val trabajos: List<Trabajo>,
     val voluntariados: List<Voluntariado>
 ) {
     data class Trabajo(
-        val fechaFin: LocalDate?,
-        val fechaInicio: LocalDate?,
+        val fechaFin: Date?,
+        val fechaInicio: Date?,
         val logros: List<String>,
         val nombre: String?,
         val posicion: String?,
@@ -17,8 +16,8 @@ data class ExperienciaModel(
         val url: String?
     )
     data class Voluntariado(
-        val fechaFin: LocalDate?,
-        val fechaInicio: LocalDate?,
+        val fechaFin: Date?,
+        val fechaInicio: Date?,
         val logros: List<String>?,
         val organizacion: String?,
         val posicion: String?,

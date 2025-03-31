@@ -1,10 +1,10 @@
 package com.gonzaloracergalan.portfolio.domain.model
 
-import java.time.LocalDate
+import java.util.Date
 
 data class Voluntariado(
-    val fechaFin: LocalDate?,
-    val fechaInicio: LocalDate?,
+    val fechaFin: Date?,
+    val fechaInicio: Date?,
     val logros: List<String>?,
     val organizacion: String?,
     val posicion: String?,

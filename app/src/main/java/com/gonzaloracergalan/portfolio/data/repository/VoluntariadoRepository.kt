@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.map
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.slf4j.LoggerFactory
-import java.time.LocalDate
+import java.util.Date
 
 class VoluntariadoRepository : KoinComponent {
     companion object {
@@ -21,8 +21,8 @@ class VoluntariadoRepository : KoinComponent {
             logger.trace("currentVoluntariadosFlow: {}", list)
             list.map { voluntariadoEntity ->
                 Voluntariado(
-                    fechaFin = LocalDate.now(),
-                    fechaInicio = LocalDate.parse(voluntariadoEntity.fechaInicio),
+                    fechaFin = voluntariadoEntity.fechaFinMillis?.let { Date(it) },
+                    fechaInicio = voluntariadoEntity.fechaInicioMillis?.let { Date(it) },
                     logros = voluntariadoEntity.logros,
                     organizacion = voluntariadoEntity.organizacion,
                     posicion = voluntariadoEntity.posicion,

@@ -24,8 +24,8 @@ data class TrabajoEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     val resumeOwnerId: Long,
-    val fechaFin: String?,
-    val fechaInicio: String?,
+    val fechaFinMillis: Long?,
+    val fechaInicioMillis: Long?,
     val logros: List<String>?, // Se requiere el converter
     val nombre: String?,
     val posicion: String?,
@@ -34,8 +34,8 @@ data class TrabajoEntity(
 ) {
     fun toDTO(): TrabajoDTO {
         return TrabajoDTO(
-            fechaFin = fechaFin,
-            fechaInicio = fechaInicio,
+            fechaFinMillis = fechaFinMillis,
+            fechaInicioMillis = fechaInicioMillis,
             logros = logros,
             nombre = nombre,
             posicion = posicion,

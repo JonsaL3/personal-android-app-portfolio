@@ -8,6 +8,7 @@ import com.gonzaloracergalan.portfolio.ui.model.MainActivityModel
 import com.gonzaloracergalan.portfolio.ui.state.MainActivityState
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import org.koin.core.component.KoinComponent
@@ -43,6 +44,8 @@ class MainActivityViewModel : ViewModel(), KoinComponent {
             val currentState = MainActivityModel(sections)
             logger.trace("mainActivityState: {}", currentState)
             MainActivityState.Idle(currentState)
+        }.catch {
+            // todo emit
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(),

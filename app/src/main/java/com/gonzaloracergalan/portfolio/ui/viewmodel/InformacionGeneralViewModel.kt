@@ -7,6 +7,7 @@ import com.gonzaloracergalan.portfolio.ui.model.InformacionGeneralModel
 import com.gonzaloracergalan.portfolio.ui.state.InformacionGeneralState
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import org.koin.core.component.KoinComponent
@@ -45,6 +46,8 @@ class InformacionGeneralViewModel : ViewModel(), KoinComponent {
             )
             logger.trace("informacionGeneral: {}", informacionGeneral)
             InformacionGeneralState.Idle(informacionGeneral)
+        }.catch {
+            // todo handle error
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(),
