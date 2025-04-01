@@ -13,4 +13,5 @@
 
     <string name="experienciascreen_trabajos">Trabajos</string>
     <string name="experienciascreen_voluntariados">Voluntariados</string>
+    <string name="experienciascreen_noactivityparaabrirenlace">No hay aplicación para abrir el enlace</string>
 </resources>

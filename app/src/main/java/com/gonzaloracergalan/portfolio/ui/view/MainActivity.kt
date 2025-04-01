@@ -5,9 +5,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.Scaffold
+import com.gonzaloracergalan.portfolio.data.util.Example
 import com.gonzaloracergalan.portfolio.ui.theme.PortfolioTheme
 import com.gonzaloracergalan.portfolio.ui.view.screen.MainActivityScreen
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.slf4j.LoggerFactory
 
 /**

@@ -10,6 +10,7 @@ private val ColorPalette = darkColorScheme(
     onPrimary = BlancoPrincipal,
     background = NegroPrincipal,
     onBackground = BlancoPrincipal,
+    surface = GrisOscuro
 )
 
 @Composable
